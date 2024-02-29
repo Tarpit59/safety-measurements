@@ -1,0 +1,409 @@
+<!-- templates/restricted_area_detection.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restricted Area Detection</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 50px;
+            font-size: 36px;
+        }
+
+        form {
+            margin: 20px auto;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            padding: 20px;
+            cursor: pointer;
+        }
+
+        .drop-zone input {
+            display: none;
+        }
+
+        .file-name {
+            margin-top: 10px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Restricted Area Detection</h1>
+    <form method="post" action="{{ url_for('restricted_area_detection') }}" enctype="multipart/form-data">
+        <div class="drop-zone" id="dropZone">
+            <p>Drag & Drop files here or click to browse</p>
+            <input type="file" id="video" name="video" accept="video/*" required>
+            <span class="file-name"></span>
+        </div>
+        <button type="submit">Apply Restricted Area Detection</button>
+    </form>
+    <a href="{{ url_for('main_page') }}">Back to Dashboard</a>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const input = dropZone.querySelector('input');
+        const fileName = dropZone.querySelector('.file-name');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+
+            if (files.length > 0) {
+                input.files = files;
+                fileName.textContent = files[0].name;
+            }
+        });
+
+        input.addEventListener('change', () => {
+            fileName.textContent = input.files[0].name;
+        });
+    </script>
+</body>
+</html> -->
+
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restricted Area Detection</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #604caf;
+            color: #fff;
+            border: 1px solid #604caf;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #9580e8;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 50px;
+            font-size: 36px; -->
+        <!-- }
+
+        form {
+            margin: 20px auto;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover { -->
+            <!-- background-color: #45a049;
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #ffffff;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+                #video-container {
+            position: relative;
+        }
+
+        #image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Restricted Area Detection</h1>
+    <form method="post" action="{{ url_for('restricted_area_detection') }}" enctype="multipart/form-data">
+        <label for="video">Upload Video:</label> -->
+        <!-- <input type="file" id="video" name="video" accept="video/*" required>
+        <button type="submit" onclick="applyRestrictedAreaDetection()">Apply Restricted Area Detection</button>
+    </form>
+    <a href="{{ url_for('main_page') }}" class="button">Back to Dashboard</a>
+    <canvas id="frameCanvas"></canvas>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function applyRestrictedAreaDetection() {
+                console.log('Function executed!');
+                const videoInput = document.getElementById('video');
+                const frameCanvas = document.getElementById('frameCanvas');
+                const ctx = frameCanvas.getContext('2d');
+                const restrictedAreaCoordinates = [];
+
+                videoInput.addEventListener('change', function () {
+                    const video = this.files[0];
+                    const videoURL = URL.createObjectURL(video);
+                    const videoElement = document.createElement('video');
+
+                    videoElement.addEventListener('loadedmetadata', function () { -->
+                        <!-- frameCanvas.width = this.videoWidth;
+                        frameCanvas.height = this.videoHeight;
+                        ctx.drawImage(this, 0, 0, frameCanvas.width, frameCanvas.height);
+
+                        console.log('Video metadata loaded successfully.');
+
+                        frameCanvas.addEventListener('click', function (event) {
+                            console.log('Canvas click event triggered.');
+
+                            const rect = this.getBoundingClientRect();
+                            const x = event.clientX - rect.left;
+                            const y = event.clientY - rect.top;
+
+                            restrictedAreaCoordinates.push({ x: x, y: y });
+
+                            if (restrictedAreaCoordinates.length === 4) {
+                                console.log('Four coordinates collected.');
+                                document.getElementById('x1').value = restrictedAreaCoordinates[0].x;
+                                document.getElementById('y1').value = restrictedAreaCoordinates[0].y;
+                                document.getElementById('x2').value = restrictedAreaCoordinates[1].x;
+                                document.getElementById('y2').value = restrictedAreaCoordinates[1].y;
+                                document.getElementById('x3').value = restrictedAreaCoordinates[2].x;
+                                document.getElementById('y3').value = restrictedAreaCoordinates[2].y;
+                                document.getElementById('x4').value = restrictedAreaCoordinates[3].x;
+                                document.getElementById('y4').value = restrictedAreaCoordinates[3].y;
+
+                                alert('Coordinates captured successfully!');
+                            } else {
+                                console.log('Current coordinates:', restrictedAreaCoordinates);
+                            }
+                        });
+                    });
+
+                    videoElement.src = videoURL;
+                    videoElement.load();
+                });
+            }
+            const form = document.querySelector('form');
+            form.addEventListener('submit', applyRestrictedAreaDetection);
+        });
+    </script>
+    
+    
+    
+</body>
+
+</html> -->
+
+
+
+
+<!-- templates/restricted_area_detection.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restricted Area Detection</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #604caf; /* Green color */
+            color: #fff; /* White text color */
+            border: 1px solid #604caf; /* Green border */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+        background-color: #9580e8; /* Darker green color on hover */
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+
+        h1 {
+            color: #333;
+            margin-top: 50px;
+            font-size: 36px;
+        }
+
+        form {
+            margin: 20px auto;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Restricted Area Detection</h1>
+    <form method="post" action="{{ url_for('restricted_area_detection') }}" enctype="multipart/form-data">
+        <label for="video">Upload Video:</label>
+        <input type="file" id="video" name="video" accept="video/*" required>
+        <button type="submit">Restricted Area Detection</button>
+    </form>
+    <a href="{{ url_for('main_page') }}" class="button">Back to Dashboard</a>
+</body>
+</html>
