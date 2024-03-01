@@ -185,9 +185,6 @@ def process_restricted_area():
             # print("Received Coordinates:", coordinates)
             # Convert coordinates to the desired format [(x1, y1), (x2, y2), ...]
             converted_coordinates = [(round(coord['x']), round(coord['y'])) for coord in coordinates if 'x' in coord and 'y' in coord]
-
-            # Log the converted coordinates for debugging
-            print("Converted Coordinates:", converted_coordinates)
             # Automatically detect the video path from the uploaded files in the UPLOAD_FOLDER
             uploaded_files = os.listdir(UPLOAD_FOLDER)
             
@@ -215,17 +212,44 @@ def process_restricted_area():
         # Return an error response
         return jsonify({'success': False, 'error': 'Internal Server Error'}), 500
 
-@app.route('/restricted_area_result')
+@app.route('/restricted_area_result', methods=["GET"])
 @login_required
 def restricted_area_result():
     # Retrieve the person count from the session
     person_count = session.get('person_count', default=0)
 
-    app.logger.debug(f"DEBUG - Person Count in restricted_area_result: {person_count}")
+    uploaded_files = os.listdir(UPLOAD_FOLDER)
     
-    # print("DEBUG - Person Count:", person_count)  # Add this line for debugging
+    if uploaded_files:
+        # Assuming the latest uploaded file is the one to be processed
+        latest_uploaded_file = max(uploaded_files, key=lambda f: os.path.getctime(os.path.join(UPLOAD_FOLDER, f)))
     # Add any necessary logic for displaying the result page
-    return render_template('restricted_area_result.html', person_count=person_count)
+    return render_template('restricted_area_result.html', person_count=person_count, video_name=latest_uploaded_file)
+
+@app.route('/view_restricted_area_video')
+@login_required
+def view_restricted_area_video():
+    video_directory = r"D:\projects\safety measurements\base\static\output"
+    video_filename = 'output_video.mp4'
+    video_path = os.path.join(video_directory, video_filename)
+
+    # Set response headers
+    headers = {
+        'Content-Type': 'video/mp4',
+        'Accept-Ranges': 'bytes',
+    }
+
+    # Check for range request
+    range_request = request.headers.get('Range')
+    if range_request:
+        video_file = open(video_path, 'rb')
+        response = partial_content_response(video_file, os.path.getsize(video_path), range_request, headers)
+        video_file.close()
+    else:
+        response = send_from_directory(video_directory, video_filename, mimetype='video/mp4', conditional=True, add_etags=True, headers=headers)
+
+    return response
+
 
 @app.route("/logout")
 def logout():

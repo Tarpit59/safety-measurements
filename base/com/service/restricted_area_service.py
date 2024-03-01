@@ -11,6 +11,7 @@ from flask import session
 
 UPLOAD_FOLDER = r"D:\projects\safety measurements\base\static\upload"
 FIRST_FRAME_FOLDER = r"D:\projects\safety measurements\base\static\first_frame"
+OUTPUT_FOLDER = r"D:\projects\safety measurements\base\static\output"
 
 def count_persons_entered_restricted_area(video, coordinates):
     # Initialize YOLO model
@@ -19,12 +20,23 @@ def count_persons_entered_restricted_area(video, coordinates):
 
     # Open video for processing
     video_capture = cv2.VideoCapture(video)
+    fps = int(video_capture.get(cv2.CAP_PROP_FPS))
 
+    # Define the codec and create a VideoWriter object
+    fourcc = cv2.VideoWriter_fourcc(*'acv1')  # MP4V codec
+    output_video_path = os.path.join(OUTPUT_FOLDER, 'output_video.mp4')
+    out = cv2.VideoWriter(output_video_path, fourcc, fps, (720, 480))
     # Initialize variables
     persons_entered_count = 0
 
     # Create a Shapely Polygon from the user-input coordinates
     restricted_area_shapely = Polygon(coordinates)
+
+    color_restricted_entered = (255, 0, 0)  # Blue
+    color_restricted_empty = (255, 255, 255)  # White
+    color_person_inside = (0, 0, 255)  # Red
+    color_person_outside = (0, 255, 0)  # Green
+
     while True:
         ret, frame = video_capture.read()
 
@@ -33,9 +45,12 @@ def count_persons_entered_restricted_area(video, coordinates):
         frame = cv2.resize(frame, (720, 480))   
         results = model(frame, classes=[0])
         boxes = results[0].boxes
+        # Draw restricted area
+        cv2.polylines(frame, [np.array(coordinates)], isClosed=True, color=color_restricted_empty, thickness=2)
 
         for box in boxes:
             class_id = int(box.cpu().cls[0])
+            confidence = float(box.cpu().conf)
             x1, y1, x2, y2 = box.cpu().xyxy[0]
 
             x3, y3 = x1 + abs(x2 - x1), y1
@@ -46,9 +61,27 @@ def count_persons_entered_restricted_area(video, coordinates):
             union_area = restricted_area_shapely.union(person_polygon_shapely).area
             iou = intersection_area / union_area if union_area > 0 else 0
 
-            if names.get(class_id) == 'person' and iou > 0.01:
-                persons_entered_count += 1
+            # Check if person is inside or outside the restricted area
+            if names.get(class_id) == 'person':
+                if iou > 0.01:
+                    persons_entered_count += 1
+                    cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color_person_inside, 2)
+                    cv2.putText(frame, f'Confidence: {confidence:.2f}', (int(x1), int(y1) - 10),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                    # Draw restricted area in blue when a person is inside
+                    cv2.polylines(frame, [np.array(coordinates)], isClosed=True, color=color_restricted_entered,
+                                  thickness=2)
+                else:
+                    cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color_person_outside, 2)
+
+        # Display count of persons entered in the top-left corner
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(frame, f'Persons Entered: {persons_entered_count}', (10, 30), font, 0.8, (0, 255, 255), 2)
+
+        # Write the frame to the output video
+        out.write(frame)
     video_capture.release()
+    out.release()
     store_restricted_area_data(video, persons_entered_count)
     return persons_entered_count
 
