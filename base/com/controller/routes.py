@@ -111,6 +111,7 @@ def safety_result():
                            unsafety_percentage=formatted_unsafety_percentage)
 
 @app.route('/download_output_video')
+@login_required
 def download_output_video():
     directory = os.path.dirname(output_video_path)
     downloadable_filename = 'output_video.mp4'  # Specify the desired filename
@@ -158,6 +159,7 @@ def restricted_area_detection():
     return render_template('restricted_area_detection.html')
 
 @app.route('/define_area', methods=['GET', 'POST'])
+@login_required
 def define_area():
     video_path = request.args.get('video_path', None)
     first_frame_path = request.args.get('first_frame_path', None)
@@ -172,6 +174,7 @@ def define_area():
     return render_template('define_area.html', video_path=video_path, first_frame_path=first_frame_path)
 
 @app.route('/process_restricted_area', methods=["GET", "POST"])
+@login_required
 def process_restricted_area():
     try:
         # Assuming the coordinates are in the JSON request
@@ -260,6 +263,3 @@ def logout():
         flash('You are not logged in', 'error')
     
     return redirect(url_for("index"))
-
-# from base.com.controller import routes
-# login_user(user)
