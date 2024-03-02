@@ -1,43 +1,37 @@
-<!-- base_layout.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/css/common.css" />
+    <link rel="stylesheet" href="static/css/style.css" />
     <style>
-        /* Add a basic navbar style */
-        nav {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
+      nav {
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        text-align: center;
+      }
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-            font-size: 16px;
-        }
+      nav a {
+        color: white;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 16px;
+      }
 
-        nav a:hover {
-            text-decoration: underline;
-            color: rgb(135, 255, 157);
-        }
+      nav a:hover {
+        text-decoration: underline;
+        color: rgb(135, 255, 157);
+      }
     </style>
-</head>
-<body>
-    <!-- Navbar -->
+  </head>
+  <body>
     <nav>
-        <a href="{{ url_for('main_page') }}">Dashboard</a>
-        <a href="{{ url_for('safety_detection') }}">Safety Detection</a>
-        <a href="{{ url_for('restricted_area_detection') }}">Restricted Area Detection</a>
+      <a href="dashboard">Dashboard</a>
+      <a href="safety-detection">Safety Detection</a>
+      <a href="restricted-area-detection">Restricted Area Detection</a>
     </nav>
-
-    <!-- Content Block -->
     {% block custom_content %}{% endblock %}
-
-</body>
+  </body>
 </html>

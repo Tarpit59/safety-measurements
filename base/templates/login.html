@@ -1,20 +1,26 @@
-<!-- templates/login.html -->
-
-{% extends 'base_layout.html' %}
-
-{% block title %}Login - Your App Title{% endblock %}
-
-{% block custom_content %}
-<div class="container">
-    <h1>Login</h1>
-    <form method="post" action="{{ url_for('login') }}">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/css/common.css" />
+    <title>Login</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Login</h1>
+      <form method="post" action="login">
+        {%if credentials%}
+        <span style="color: red">{{credentials}}</span>
+        {%endif%}
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <input type="text" id="username" name="username" required />
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password" required />
 
         <button type="submit">Login</button>
-    </form>
-</div>
-{% endblock %}
+      </form>
+    </div>
+  </body>
+</html>

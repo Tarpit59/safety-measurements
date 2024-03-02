@@ -1,4 +1,4 @@
-from base import db
+from base import db, app
 
 
 class HelmetVestDetectionVO(db.Model):

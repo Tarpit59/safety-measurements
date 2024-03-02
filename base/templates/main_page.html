@@ -1,8 +1,6 @@
 <!-- main_page.html -->
 {% extends 'base_layout.html' %}
 
-{% block title %}Login - Your App Title{% endblock %}
-
 {% block custom_content %}
 <!DOCTYPE html>
 <html lang="en">
@@ -10,8 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}"> -->
-    <title>Main Page</title>
+    <title>Dashboard</title>
     <style>
         .button {
             display: inline-block;
@@ -100,11 +97,11 @@
     <div class="dropdown">
         <button class="dropbtn">Choose an option</button>
         <div class="dropdown-content">
-            <a href="{{ url_for('safety_detection') }}">Safety Detection</a>
-            <a href="{{ url_for('restricted_area_detection') }}">Restricted Area Detection</a>
+            <a href="safety-detection">Safety Detection</a>
+            <a href="restricted-area-detection">Restricted Area Detection</a>
         </div>
     </div>
-    <a class="button" href="{{ url_for('logout') }}" >Logout</a>
+    <a class="button" href="logout" >Logout</a>
 </body>
 </html>
 {% endblock %}
