@@ -1,0 +1,26 @@
+.home {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.home p {
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: white;
+    text-align: center;
+}
+
+.home-video {
+    width: 500px;
+    border-radius: 10px;
+}
+
+.video-bg {
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+}

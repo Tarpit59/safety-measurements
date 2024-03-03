@@ -3,35 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="static/css/common.css" />
-    <link rel="stylesheet" href="static/css/style.css" />
-    <style>
-      nav {
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        text-align: center;
-      }
-
-      nav a {
-        color: white;
-        text-decoration: none;
-        margin: 0 10px;
-        font-size: 16px;
-      }
-
-      nav a:hover {
-        text-decoration: underline;
-        color: rgb(135, 255, 157);
-      }
-    </style>
+    <link rel="stylesheet" href="static/css/global.css" />
+    <title>Dashboard</title>
   </head>
   <body>
-    <nav>
-      <a href="dashboard">Dashboard</a>
-      <a href="safety-detection">Safety Detection</a>
-      <a href="restricted-area-detection">Restricted Area Detection</a>
+    <nav class="navbar">
+      <div>
+        <img src="" alt="Logo" />
+      </div>
+      <div class="link">
+        <a href="dashboard">Home</a>
+        <a href="safety-detection">Safety Detection</a>
+        <a href="restricted-area-detection">Restricted Area Detection</a>
+      </div>
+      <div class="user">
+        <p>Welcome <b>{{user.username.capitalize()}}</b></p>
+        <a class="logout" href="logout">Logout</a>
+      </div>
     </nav>
-    {% block custom_content %}{% endblock %}
+    <div class="content">{% block content %} {% endblock %}</div>
+    <footer>
+      <div class="footer">
+        <p>
+          Copyright © 2024 All rights reserved and made with ♥ by
+          <strong>Safety Hazzard Detection Project</strong>
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
