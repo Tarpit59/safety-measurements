@@ -10,6 +10,11 @@ def loader_user(id):
     return UserVO.query.get(id)
 
 
+@app.login_manager.unauthorized_handler
+def unauth_handler():
+    return redirect('login')
+
+
 @app.route('/')
 def index():
     try:
@@ -24,7 +29,7 @@ def login():
         user_dao = UserDAO()
         user_vo = UserVO()
         if request.method == 'GET':
-            return render_template('login.html')
+            return render_template('user/login.html')
         else:
             username = request.form.get('username')
             password = request.form.get('password')
@@ -34,7 +39,7 @@ def login():
             if user:
                 login_user(user, remember=True)
                 return redirect('/dashboard')
-            return render_template('login.html', credentials="Invalid  Credentials")
+            return render_template('user/login.html', credentials="Invalid  Credentials")
     except Exception as e:
         return render_template('error.html', error=e)
 
@@ -45,7 +50,7 @@ def register():
         user_dao = UserDAO()
         user_vo = UserVO()
         if request.method == 'GET':
-            return render_template('register.html')
+            return render_template('user/register.html')
         else:
             username = request.form.get('username')
             password = request.form.get('password')
@@ -60,7 +65,7 @@ def register():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('main_page.html')
+    return render_template('dashboard.html')
 
 
 @app.route("/logout")

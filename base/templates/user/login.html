@@ -2,23 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap"
-      rel="stylesheet"
-    />
     <title>Login</title>
-
     <style media="screen">
-      *,
-      *:before,
-      *:after {
-        padding: 0;
-        margin: 0;
-        box-sizing: border-box;
-      }
-      body {
-        background-color: #080710;
-      }
+      @import url("static/css/global.css");
       .background {
         width: 430px;
         height: 520px;
@@ -108,6 +94,7 @@
       }
     </style>
   </head>
+
   <body>
     <div class="background">
       <div class="shape"></div>
@@ -117,12 +104,7 @@
       <h3>Login Here</h3>
 
       <label for="username">Username</label>
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        id="username"
-      />
+      <input type="text" name="username" placeholder="Username" id="username" />
 
       <label for="password">Password</label>
       <input
