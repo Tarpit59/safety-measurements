@@ -39,6 +39,24 @@ def login():
         return render_template('error.html', error=e)
 
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    try:
+        user_dao = UserDAO()
+        user_vo = UserVO()
+        if request.method == 'GET':
+            return render_template('register.html')
+        else:
+            username = request.form.get('username')
+            password = request.form.get('password')
+            user_vo.username = username
+            user_vo.password = password
+            user = user_dao.save(user_vo)
+            return redirect('login')
+    except Exception as e:
+        return render_template('error.html', error=e)
+
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
