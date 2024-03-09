@@ -1,0 +1,17 @@
+{% extends 'base_layout.html' %} {% block content %}
+<style>
+  @import url("static/css/restricted_area_detection.css");
+</style>
+
+<div class="restricted-area-container">
+  <form action="restricted-area-detection" method="post">
+    <h3>Restricted Area Detection</h3>
+
+    <label for="video">Upload Video: </label>
+    <input type="file" name="video" placeholder="Upload video" id="video" />
+
+    <button>Submit</button>
+  </form>
+</div>
+
+{% endblock %}

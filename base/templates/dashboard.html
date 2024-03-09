@@ -2,9 +2,10 @@
 <style>
   @import url("static/css/home.css");
 </style>
+<script src="static/js/home.js"></script>
 <div class="home">
-  <div>
-    <p>Restricted Area Detection</p>
+  <div onclick="gotoUrl('safety-detection')">
+    <p>Safety Equipments Detection</p>
     <div class="video-bg">
       <video
         class="home-video"
@@ -15,8 +16,9 @@
       />
     </div>
   </div>
-  <div>
-    <p>Safety Equipments Detection</p>
+
+  <div onclick="gotoUrl('restricted-area-detection')">
+    <p>Restricted Area Detection</p>
     <div class="video-bg">
       <video
         class="home-video"
