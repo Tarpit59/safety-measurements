@@ -1,14 +1,18 @@
 import os
 from werkzeug.utils import secure_filename
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request,url_for
 from flask_login import login_user, login_required, current_user
 from base.com.service.safety_service import apply_safety_detection
+from base.com.vo.helmet_vest_detection_vo import HelmetVestDetectionVO
+from base.com.dao.safety_detection_dao import HelmetVestDetectionDAO
 from base import app
 
 
 @app.route('/safety-detection', methods=['GET', 'POST'])
 @login_required
 def safety_detection():
+    helmet_vest_detection_vo_obj = HelmetVestDetectionVO()
+    helmet_vest_detection_dao_obj = HelmetVestDetectionDAO()
     try:
         if request.method == 'GET':
             return render_template('safety_detection/index.html', user=current_user)
@@ -28,11 +32,14 @@ def safety_detection():
                     results = apply_safety_detection(video_path)
                     video_name, safety_percentage, unsafety_percentage = results
 
-                # Redirect to the safety_result route with the results as query parameters
-                    return redirect(url_for('safety_result',
-                                            video_name=video_name,
-                                            safety_percentage=safety_percentage,
-                                            unsafety_percentage=unsafety_percentage))
+                    helmet_vest_detection_vo_obj.video_name = video_name
+                    helmet_vest_detection_vo_obj.safety_percentage = safety_percentage
+                    helmet_vest_detection_vo_obj.unsafety_percentage = unsafety_percentage
+
+
+                    helmet_vest_detection_dao_obj.save(helmet_vest_detection_vo_obj)
+
+                    return render_template('safety_detection/result.html', user=current_user)
                 finally:
                     os.remove(video_path)
                     

@@ -149,19 +149,19 @@ def apply_safety_detection(video):
         # Return None or a specific value to indicate no detections
         return video_name, None, None
     
-    save_to_database(video_name, safety_percentage, unsafety_percentage)
+    # save_to_database(video_name, safety_percentage, unsafety_percentage)
 
     return video_name, safety_percentage, unsafety_percentage
 
-def save_to_database(video, safety_percentage, unsafety_percentage, user_id):
-    # SafetyData is a SQLAlchemy model with columns: id, user_id, video_name, safety, unsafety
-    # Set the user_id based on the currently logged-in user
-    # user_id = current_user.id if current_user.is_authenticated else None
-    video_name = os.path.basename(video)
+# def save_to_database(video, safety_percentage, unsafety_percentage):
+#     # SafetyData is a SQLAlchemy model with columns: id, user_id, video_name, safety, unsafety
+#     # Set the user_id based on the currently logged-in user
+#     # user_id = current_user.id if current_user.is_authenticated else None
+#     video_name = os.path.basename(video)
     
-    # Create a new SafetyData instance
-    safety_data = SafetyData(user_id=user_id, video_name=video_name, safety_percentage=safety_percentage, unsafety_percentage=unsafety_percentage)
+#     # Create a new SafetyData instance
+#     safety_data = SafetyData(video_name=video_name, safety_percentage=safety_percentage, unsafety_percentage=unsafety_percentage)
     
-    # Add the instance to the session and commit changes to the database
-    db.session.add(safety_data)
-    db.session.commit()
+#     # Add the instance to the session and commit changes to the database
+#     db.session.add(safety_data)
+#     db.session.commit()
