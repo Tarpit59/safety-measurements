@@ -4,11 +4,22 @@
 </style>
 
 <div class="restricted-area-container">
-  <form action="restricted-area-detection" method="post">
+  <form
+    action="restricted-area-detection"
+    method="post"
+    enctype="multipart/form-data"
+  >
     <h3>Restricted Area Detection</h3>
 
     <label for="video">Upload Video: </label>
-    <input type="file" name="video" placeholder="Upload video" id="video" />
+    <input
+      type="file"
+      name="video"
+      placeholder="Upload video"
+      id="video"
+      required
+      accept="video/*"
+    />
 
     <button>Submit</button>
   </form>
