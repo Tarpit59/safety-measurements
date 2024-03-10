@@ -1,13 +1,9 @@
-# services/safety_service.py
 import os
 from ultralytics import YOLO
 import cv2
 import logging 
-from base.com.vo.safety_model import SafetyData
-from base.com.vo.user_model import User
+from base.com.vo.helmet_vest_detection_vo import HelmetVestDetectionVO
 from base import db
-from flask import session
-from flask_login import current_user
 import tempfile
 import shutil
 import cv2
@@ -15,9 +11,9 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 # Consider moving model initialization outside the function and make it a configurable parameter
-MODEL_PATH = r"D:\projects\safety measurements\best.pt"
-output_folder = r"D:\projects\safety measurements\base\static\output"
-output_video_path = r"D:\projects\safety measurements\base\static\output\output_video.mp4"
+MODEL_PATH = r"model\best.pt"
+OUTPUT_FOLDER = r"base\static\output"
+OUTPUT_VIDEO_PATH = r"base\static\output\output_video.mp4"
 def initialize_model():
     return YOLO(MODEL_PATH)
 
@@ -49,14 +45,14 @@ def apply_safety_detection(video):
         # Get the frames per second (fps) of the input video
         fps = cap.get(cv2.CAP_PROP_FPS)
          # Create output folder if it doesn't exist
-        if not os.path.exists(output_folder):
-            os.makedirs(output_folder)
+        if not os.path.exists(OUTPUT_FOLDER):
+            os.makedirs(OUTPUT_FOLDER)
 
         # Create VideoWriter object with the same fps as the input video
         fourcc = cv2.VideoWriter_fourcc(*'acv1')
         # fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
 
-        out = cv2.VideoWriter(output_video_path, fourcc, fps, (int(cap.get(3)), int(cap.get(4))))
+        out = cv2.VideoWriter(OUTPUT_VIDEO_PATH, fourcc, fps, (int(cap.get(3)), int(cap.get(4))))
 
         frame_number = 0
 
@@ -153,8 +149,7 @@ def apply_safety_detection(video):
         # Return None or a specific value to indicate no detections
         return video_name, None, None
     
-    user_id = session.get('user_id', 0)
-    save_to_database(video_name, safety_percentage, unsafety_percentage, user_id)
+    save_to_database(video_name, safety_percentage, unsafety_percentage)
 
     return video_name, safety_percentage, unsafety_percentage
 

@@ -1,0 +1,24 @@
+{% extends 'base_layout.html' %} {% block content %}
+<style>
+  @import url("static/css/safety_detection.css");
+</style>
+
+<div class="safety-container">
+  <form action="safety-detection" method="post" enctype="multipart/form-data">
+    <h3>Safety Detection</h3>
+
+    <label for="video">Upload Video: </label>
+    <input
+      type="file"
+      name="video"
+      placeholder="Upload video"
+      id="video"
+      required
+      accept="video/*"
+    />
+
+    <button>Submit</button>
+  </form>
+</div>
+
+{% endblock %}
