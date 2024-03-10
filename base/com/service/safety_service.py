@@ -1,7 +1,7 @@
 import os
 from ultralytics import YOLO
 import cv2
-import logging 
+import logging
 from base.com.vo.helmet_vest_detection_vo import HelmetVestDetectionVO
 from base import db
 import tempfile
@@ -14,19 +14,23 @@ from PIL import Image, ImageDraw, ImageFont
 MODEL_PATH = r"model\best.pt"
 OUTPUT_FOLDER = r"base\static\output"
 OUTPUT_VIDEO_PATH = r"base\static\output\output_video.mp4"
+
+
 def initialize_model():
     return YOLO(MODEL_PATH)
 
+
 def draw_text_and_box_on_image(image, text, position, box_coordinates, font, color):
     draw = ImageDraw.Draw(image)
-    
+
     # Draw bounding box
     draw.rectangle(box_coordinates, outline=color, width=2)
-    
+
     # Draw text with specified color
     draw.text(position, text, fill=color, font=font)
-    
+
     return image
+
 
 def apply_safety_detection(video):
     model = initialize_model()
@@ -44,7 +48,7 @@ def apply_safety_detection(video):
 
         # Get the frames per second (fps) of the input video
         fps = cap.get(cv2.CAP_PROP_FPS)
-         # Create output folder if it doesn't exist
+        # Create output folder if it doesn't exist
         if not os.path.exists(OUTPUT_FOLDER):
             os.makedirs(OUTPUT_FOLDER)
 
@@ -52,7 +56,8 @@ def apply_safety_detection(video):
         fourcc = cv2.VideoWriter_fourcc(*'acv1')
         # fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
 
-        out = cv2.VideoWriter(OUTPUT_VIDEO_PATH, fourcc, fps, (int(cap.get(3)), int(cap.get(4))))
+        out = cv2.VideoWriter(OUTPUT_VIDEO_PATH, fourcc,
+                              fps, (int(cap.get(3)), int(cap.get(4))))
 
         frame_number = 0
 
@@ -68,17 +73,18 @@ def apply_safety_detection(video):
             # Break the loop if the video has ended
             if not ret:
                 break
-            
+
             # Convert the OpenCV BGR image to RGB (PIL format)
             image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
             try:
                 results = model.predict(frame)
                 result = results[0]
-                
+
                 # Create a font with the desired size
                 font_size = 20  # Adjust the font size as needed
-                font = ImageFont.truetype("arial.ttf", font_size)  # Use arial.ttf or another font file with the desired size
+                # Use arial.ttf or another font file with the desired size
+                font = ImageFont.truetype("arial.ttf", font_size)
 
                 # Keep track of whether any detection occurred in this frame
                 detection_occurred = False
@@ -110,11 +116,14 @@ def apply_safety_detection(video):
 
                     # Draw text and bounding box on the image
                     text = f"{class_id}({conf})"
-                    position = (cords[0], cords[1] - 22)  # Adjust the position based on your preference
-                    image_with_text_and_box = draw_text_and_box_on_image(image, text, position, cords, font, text_color)
+                    # Adjust the position based on your preference
+                    position = (cords[0], cords[1] - 22)
+                    image_with_text_and_box = draw_text_and_box_on_image(
+                        image, text, position, cords, font, text_color)
 
                     # Convert the modified image back to BGR (OpenCV format)
-                    modified_frame = cv2.cvtColor(np.array(image_with_text_and_box), cv2.COLOR_RGB2BGR)
+                    modified_frame = cv2.cvtColor(
+                        np.array(image_with_text_and_box), cv2.COLOR_RGB2BGR)
 
                     # If at least one detection occurred, set detection_occurred to True
                     if not detection_occurred:
@@ -126,7 +135,8 @@ def apply_safety_detection(video):
                         unsafety_count += 1
 
                 # Write the frame to the output video (outside the detection loop)
-                out.write(modified_frame) if detection_occurred else out.write(frame)
+                out.write(
+                    modified_frame) if detection_occurred else out.write(frame)
 
             except Exception as e:
                 # Log the error instead of printing
@@ -140,28 +150,12 @@ def apply_safety_detection(video):
 
     # Calculate percentages based on the total number of detections
     total_detections = safety_count + unsafety_count
-    
+
     # Check if total_detections is not zero before calculating percentages
     if total_detections != 0:
         safety_percentage = (safety_count / total_detections) * 100
         unsafety_percentage = (unsafety_count / total_detections) * 100
     else:
-        # Return None or a specific value to indicate no detections
         return video_name, None, None
-    
-    # save_to_database(video_name, safety_percentage, unsafety_percentage)
 
-    return video_name, safety_percentage, unsafety_percentage
-
-# def save_to_database(video, safety_percentage, unsafety_percentage):
-#     # SafetyData is a SQLAlchemy model with columns: id, user_id, video_name, safety, unsafety
-#     # Set the user_id based on the currently logged-in user
-#     # user_id = current_user.id if current_user.is_authenticated else None
-#     video_name = os.path.basename(video)
-    
-#     # Create a new SafetyData instance
-#     safety_data = SafetyData(video_name=video_name, safety_percentage=safety_percentage, unsafety_percentage=unsafety_percentage)
-    
-#     # Add the instance to the session and commit changes to the database
-#     db.session.add(safety_data)
-#     db.session.commit()
+    return video_name, round(safety_percentage, 2), round(unsafety_percentage, 2)
