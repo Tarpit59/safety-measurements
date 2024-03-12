@@ -1,0 +1,122 @@
+{% extends 'base_layout.html' %}
+{% block content %}
+<style>
+    .canvas-container {
+      height: 100%; /* Adjust this value if needed */
+      margin: 0;
+      flex-direction: column;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+    }
+    #restrictedAreaCanvas {
+        border: 1px solid #ddd;
+        /* margin-top: 10px; */
+        margin-top: 10px;
+        display: block;
+    }
+    #submitCoordinates {
+        /* margin-top: 10px; */
+        margin-top: 10px;
+        display: block;
+    }
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<div class="canvas-container">
+    <h1>Define Restricted Area</h1>
+    <p>Click on the four points to define the restricted area.</p>
+    <canvas id="restrictedAreaCanvas" style="border: 1px solid #ddd;"></canvas>
+    <button id="submitCoordinates">Submit Coordinates</button>
+</div>
+<script>
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    var coordinates = [];
+    var videoPath = "{{ video_path.replace('\\', '\\\\') }}";
+    var firstFramePath = "{{ url_for('static', filename='first_frame/first_frame.jpg', _external=True).replace('\\', '\\\\') }}";
+
+    var processUrl = "{{ url_for('process_restricted_area') }}";
+
+    var canvas = document.getElementById("restrictedAreaCanvas");
+    var ctx = canvas.getContext("2d");
+
+    function loadImage() {
+        var img = new Image();
+        img.onload = function () {
+            // Set canvas dimensions
+            canvas.width = 720;
+            canvas.height = 480;
+
+            // Calculate the starting position to center the image
+            var startX = (canvas.width - img.width) / 2;
+            var startY = (canvas.height - img.height) / 2;
+
+            console.log("Image Dimensions:", img.width, img.height);
+            console.log("Canvas Dimensions:", canvas.width, canvas.height);
+
+            // Draw the image centered on the canvas
+            ctx.drawImage(img, startX, startY, img.width, img.height);
+            canvas.addEventListener('click', function (e) {
+                var rect = canvas.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+
+                coordinates.push({ x: x, y: y });
+
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                ctx.fillStyle = 'red';
+                ctx.fill();
+                ctx.stroke();
+            });
+        };
+
+        img.src = firstFramePath;
+    }
+
+    document.getElementById("submitCoordinates").addEventListener('click', function () {
+        var videoPathExists = coordinates.some(coord => 'video_path' in coord);
+
+        if (!videoPathExists) {
+        // Push videoPath once for the whole set of coordinates
+        coordinates.push({ video_path: videoPath });
+        }
+        // // Push videoPath once for the whole set of coordinates
+        // coordinates.push({ video_path: videoPath });
+
+        var coordinatesJSON = JSON.stringify({ coordinates: coordinates });
+
+        axios.post(processUrl, coordinatesJSON,{
+                    headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+          // Send coordinates directly as JSON
+            .then(response => {
+                console.log("Response Headers:", response.headers);
+                console.log("Response Status:", response.status);
+                return response.data;
+            })
+            .then(data => {
+                console.log("Response Data:", data);
+                if (data && data.success) {
+                    window.location.href = "{{ url_for('restricted_area_result') }}";
+                } else {
+                    console.error('Error in processing coordinates:', data.error);
+                    alert('An error occurred while processing the coordinates. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An unexpected error occurred. Please try again.');
+            });
+    });
+
+    loadImage();
+});
+</script>
+{% endblock %}

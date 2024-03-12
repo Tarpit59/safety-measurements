@@ -5,19 +5,19 @@ from shapely.geometry import Polygon
 from ultralytics import YOLO
 import os
 from werkzeug.utils import secure_filename
-from base.com.vo.restricted_model import RestrictedAreaData
+from base.com.vo.restricted_vo import RestrictedAreaVO
 from base import db
 from flask import session
 
-UPLOAD_FOLDER = r"D:\projects\safety measurements\base\static\upload"
-FIRST_FRAME_FOLDER = r"D:\projects\safety measurements\base\static\first_frame"
-OUTPUT_FOLDER = r"D:\projects\safety measurements\base\static\output"
+UPLOAD_FOLDER = r"base\static\upload"
+FIRST_FRAME_FOLDER = r"base\static\first_frame"
+OUTPUT_FOLDER = r"base\static\output"
 
 def count_persons_entered_restricted_area(video, coordinates):
     # Initialize YOLO model
-    model = YOLO("yolov8n.pt")
+    model = YOLO("model/yolov8n.pt")
     names = model.names
-
+    entering_persons = {}
     # Open video for processing
     video_capture = cv2.VideoCapture(video)
     fps = int(video_capture.get(cv2.CAP_PROP_FPS))
@@ -43,15 +43,16 @@ def count_persons_entered_restricted_area(video, coordinates):
         if not ret:
             break
         frame = cv2.resize(frame, (720, 480))   
-        results = model(frame, classes=[0])
-        boxes = results[0].boxes
+        results = model.track(frame, classes=[0], persist=True)
+        # boxes = results[0].boxes
         # Draw restricted area
         cv2.polylines(frame, [np.array(coordinates)], isClosed=True, color=color_restricted_empty, thickness=2)
 
-        for box in boxes:
-            class_id = int(box.cpu().cls[0])
-            confidence = float(box.cpu().conf)
-            x1, y1, x2, y2 = box.cpu().xyxy[0]
+        for box in results[-1].boxes.data:
+            class_id = int(box[5])
+            # confidence = float(box.cpu().conf)
+            confidence = 0
+            x1, y1, x2, y2 = box[:4].cpu().numpy()
 
             x3, y3 = x1 + abs(x2 - x1), y1
             x4, y4 = x1, y1 + abs(y1 - y2)
@@ -63,16 +64,23 @@ def count_persons_entered_restricted_area(video, coordinates):
 
             # Check if person is inside or outside the restricted area
             if names.get(class_id) == 'person':
-                if iou > 0.01:
-                    persons_entered_count += 1
+                person_id = int(box[4])
+                if iou > 0:
+                    # persons_entered_count += 1
                     cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color_person_inside, 2)
-                    cv2.putText(frame, f'Confidence: {confidence:.2f}', (int(x1), int(y1) - 10),
+                    cv2.putText(frame, f'Id:{person_id}', (int(x1), int(y1) - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
                     # Draw restricted area in blue when a person is inside
                     cv2.polylines(frame, [np.array(coordinates)], isClosed=True, color=color_restricted_entered,
                                   thickness=2)
+                    
+                    if person_id not in entering_persons or not entering_persons[person_id]:
+                        entering_persons[person_id] = True
+                        persons_entered_count += 1
                 else:
                     cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color_person_outside, 2)
+                    cv2.putText(frame, f'Id:{person_id}', (int(x1), int(y1) - 10),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
         # Display count of persons entered in the top-left corner
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -101,15 +109,11 @@ def get_first_frame(video_path):
     return frame_path
 
 def store_restricted_area_data(video, persons_entered_count):
-    # Retrieve user_id from the session or set it as needed
-    user_id = session.get('user_id', 0)
-
     # Get the video name from the path
     video_name = os.path.basename(video)
 
     # Create a new RestrictedAreaData instance
-    restricted_area_data = RestrictedAreaData(user_id=user_id, video_name=video_name, person_count=persons_entered_count)
-
+    restricted_area_data = RestrictedAreaVO(video_name=video_name, person_count=persons_entered_count)
     try:
         # Add the instance to the session
         db.session.add(restricted_area_data)

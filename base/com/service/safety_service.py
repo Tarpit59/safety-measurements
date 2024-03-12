@@ -53,7 +53,7 @@ def apply_safety_detection(video):
             os.makedirs(OUTPUT_FOLDER)
 
         # Create VideoWriter object with the same fps as the input video
-        fourcc = cv2.VideoWriter_fourcc(*'acv1')
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
         # fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
 
         out = cv2.VideoWriter(OUTPUT_VIDEO_PATH, fourcc,
