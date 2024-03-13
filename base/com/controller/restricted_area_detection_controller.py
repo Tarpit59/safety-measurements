@@ -112,7 +112,7 @@ def restricted_area_result():
         return render_template(
             'restricted_area_detection/result.html',
             person_count=person_count,
-            video_name=latest_uploaded_file,
+            video_name=latest_uploaded_file.upper(),
             video="static/output/output_video.mp4",
             user=current_user
         )

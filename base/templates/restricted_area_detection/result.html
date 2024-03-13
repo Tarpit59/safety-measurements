@@ -3,16 +3,17 @@
   @import url("static/css/restricted_area_result.css");
 </style>
 <div class="container">
-  <h1>Restricted Area Result</h1>
   <div>
     <video controls>
       <source src="{{video}}" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
-    <div>
-      <p>Video Name: {{ video_name }}</p>
+    <div class="container-2">
+      <h1>Restricted Area Result</h1>
+      <p>Video Name: <b>{{ video_name }}</b></p>
       <p>
-        Number of persons detected in the restricted area: {{ person_count }}
+        Number of persons detected<br />in the restricted area:
+        <b>{{ person_count }}</b>
       </p>
     </div>
   </div>
