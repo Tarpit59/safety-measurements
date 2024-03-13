@@ -2,6 +2,8 @@ import os
 from flask import render_template, redirect, request, url_for, jsonify, session
 from flask_login import login_user, login_required, current_user
 from base.com.service.restricted_area_service import get_first_frame, store_uploaded_video, count_persons_entered_restricted_area
+from base.com.vo.restricted_vo import RestrictedAreaVO
+from base.com.dao.restricted_area_detection_dao import RestrictedAreaDAO
 from base import app
 
 
@@ -50,6 +52,8 @@ def define_area():
 @app.route('/process_restricted_area', methods=["GET", "POST"])
 @login_required
 def process_restricted_area():
+    restricted_area_vo_obj = RestrictedAreaVO()
+    restricted_area_dao_obj = RestrictedAreaDAO()
     try:
         data = request.json
 
@@ -71,18 +75,21 @@ def process_restricted_area():
                 video_path = os.path.join(
                     app.config['UPLOAD_FOLDER'], latest_uploaded_file)
 
-            # Implement your AI code for person counting using the coordinates
-            # Example: pass coordinates to the AI function and get the result
             person_count = count_persons_entered_restricted_area(
-                video_path, converted_coordinates)
+                video_path,
+                converted_coordinates
+            )
+
+            restricted_area_vo_obj.person_count = person_count
+            restricted_area_vo_obj.video_name = latest_uploaded_file
+            restricted_area_dao_obj.save(restricted_area_vo_obj)
+
             # Store person_count in the session
             session['person_count'] = person_count
             # Redirect to the restricted_area_result route with the person count as a parameter
             return jsonify({'success': True, 'person_count': person_count})
-
         else:
             raise ValueError('Invalid or missing coordinates in the request')
-
     except Exception as e:
         return render_template('error.html', error=e)
 
@@ -92,7 +99,6 @@ def process_restricted_area():
 def restricted_area_result():
     try:
         person_count = session.get('person_count', default=0)
-
         uploaded_files = os.listdir(app.config['UPLOAD_FOLDER'])
 
         if uploaded_files:

@@ -90,7 +90,6 @@ def count_persons_entered_restricted_area(video, coordinates):
         out.write(frame)
     video_capture.release()
     out.release()
-    store_restricted_area_data(video, persons_entered_count)
     return persons_entered_count
 
 def store_uploaded_video(video):
@@ -107,24 +106,3 @@ def get_first_frame(video_path):
     cv2.imwrite(frame_path, frame)
     cap.release()
     return frame_path
-
-def store_restricted_area_data(video, persons_entered_count):
-    # Get the video name from the path
-    video_name = os.path.basename(video)
-
-    # Create a new RestrictedAreaData instance
-    restricted_area_data = RestrictedAreaVO(video_name=video_name, person_count=persons_entered_count)
-    try:
-        # Add the instance to the session
-        db.session.add(restricted_area_data)
-
-        # Commit changes to the database
-        db.session.commit()
-
-        print("Data successfully stored in the database.")
-
-    except Exception as e:
-        # Rollback changes in case of an error
-        db.session.rollback()
-
-        print(f"Error storing data in the database: {str(e)}")  
