@@ -1,17 +1,13 @@
-# restricted_area_service.py
 import cv2
 import numpy as np
 from shapely.geometry import Polygon
 from ultralytics import YOLO
 import os
 from werkzeug.utils import secure_filename
-from base.com.vo.restricted_vo import RestrictedAreaVO
-from base import db
-from flask import session
 
 UPLOAD_FOLDER = r"base\static\upload"
 FIRST_FRAME_FOLDER = r"base\static\first_frame"
-OUTPUT_FOLDER = r"base\static\output"
+OUTPUT_FOLDER = r"base\static\output\output_restricted"
 
 def count_persons_entered_restricted_area(video, coordinates):
     # Initialize YOLO model

@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, flash
+from flask import render_template, redirect, request, session
 from flask_login import login_user, login_required, current_user, logout_user
 from base import app, login_manager
 from base.com.vo.user_vo import UserVO
@@ -73,7 +73,5 @@ def dashboard():
 def logout():
     if current_user.is_authenticated:
         logout_user()
-        flash('Logout successful!', 'success')
-    else:
-        flash('You are not logged in', 'error')
+        session.clear()
     return redirect('login')

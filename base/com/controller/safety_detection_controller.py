@@ -1,7 +1,7 @@
 import os
 from werkzeug.utils import secure_filename
-from flask import render_template, redirect, request, url_for
-from flask_login import login_user, login_required, current_user
+from flask import render_template, request, session
+from flask_login import login_required, current_user
 from base.com.service.safety_service import apply_safety_detection
 from base.com.vo.helmet_vest_detection_vo import HelmetVestDetectionVO
 from base.com.dao.safety_detection_dao import HelmetVestDetectionDAO
@@ -40,13 +40,14 @@ def safety_detection():
 
                     return render_template('safety_detection/result.html',
                                            user=current_user,
-                                           video=f"static/output/output_video.mp4",
-                                           video_name=video_name,
+                                           video=f"static/output/output_safety/output_video.mp4",
+                                           video_name=video_name.upper(),
                                            safety_percentage=safety_percentage,
                                            unsafety_percentage=unsafety_percentage
                                            )
                 finally:
                     os.remove(video_path)
+                    session.clear()
 
             return render_template('error.html', error="Video not available")
     except Exception as e:

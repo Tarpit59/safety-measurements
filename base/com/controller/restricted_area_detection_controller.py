@@ -1,6 +1,6 @@
 import os
 from flask import render_template, redirect, request, url_for, jsonify, session
-from flask_login import login_user, login_required, current_user
+from flask_login import login_required, current_user
 from base.com.service.restricted_area_service import get_first_frame, store_uploaded_video, count_persons_entered_restricted_area
 from base.com.vo.restricted_vo import RestrictedAreaVO
 from base.com.dao.restricted_area_detection_dao import RestrictedAreaDAO
@@ -19,18 +19,24 @@ def restricted_area_detection():
             video_path = store_uploaded_video(video)
             first_frame_path = get_first_frame(video_path)
 
-            return redirect(url_for('define_area', video_path=video_path, first_frame_path=first_frame_path))
+            session['video_path'] = video_path
+            session['first_frame_path'] = first_frame_path
+
+            return redirect('define-area')
         return render_template('error.html', error="Method not available")
     except Exception as e:
         return render_template('error.html', error=e)
 
 
-@app.route('/define_area', methods=['GET', 'POST'])
+@app.route('/define-area', methods=['GET', 'POST'])
 @login_required
 def define_area():
     try:
-        video_path = request.args.get('video_path', None)
-        first_frame_path = request.args.get('first_frame_path', None)
+        video_path = session.get('video_path')
+        first_frame_path = session.get('first_frame_path')
+
+        if video_path is None or first_frame_path is None:
+            return redirect('restricted-area-detection')
 
         if request.method == 'POST':
             video = request.files['video']
@@ -47,16 +53,20 @@ def define_area():
         return render_template('error.html', error="Method not allowed")
     except Exception as e:
         return render_template('error.html', error=e)
+    finally:
+        session.clear()
 
 
-@app.route('/process_restricted_area', methods=["GET", "POST"])
+@app.route('/process-restricted-area', methods=['GET', "POST"])
 @login_required
 def process_restricted_area():
     restricted_area_vo_obj = RestrictedAreaVO()
     restricted_area_dao_obj = RestrictedAreaDAO()
     try:
-        data = request.json
+        if request.method != 'POST':
+            return redirect('restricted-area-detection')
 
+        data = request.json
         # Ensure data is a dictionary and has 'coordinates' key
         if isinstance(data, dict) and 'coordinates' in data:
             coordinates = data['coordinates']
@@ -94,7 +104,7 @@ def process_restricted_area():
         return render_template('error.html', error=e)
 
 
-@app.route('/restricted_area_result', methods=["GET"])
+@app.route('/restricted-area-result', methods=["GET"])
 @login_required
 def restricted_area_result():
     try:
@@ -113,8 +123,8 @@ def restricted_area_result():
             'restricted_area_detection/result.html',
             person_count=person_count,
             video_name=latest_uploaded_file.upper(),
-            video="static/output/output_video.mp4",
+            video="static/output/output_restricted/output_video.mp4",
             user=current_user
         )
     except Exception as e:
-        return render_template('error.html', error=e)
+        return redirect('restricted-area-detection')

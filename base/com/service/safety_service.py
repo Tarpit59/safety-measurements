@@ -2,8 +2,6 @@ import os
 from ultralytics import YOLO
 import cv2
 import logging
-from base.com.vo.helmet_vest_detection_vo import HelmetVestDetectionVO
-from base import db
 import tempfile
 import shutil
 import cv2
@@ -12,8 +10,8 @@ from PIL import Image, ImageDraw, ImageFont
 
 # Consider moving model initialization outside the function and make it a configurable parameter
 MODEL_PATH = r"model\best.pt"
-OUTPUT_FOLDER = r"base\static\output"
-OUTPUT_VIDEO_PATH = r"base\static\output\output_video.mp4"
+OUTPUT_FOLDER = r"base\static\output\output_safety"
+OUTPUT_VIDEO_PATH = r"base\static\output\output_safety\output_video.mp4"
 
 
 def initialize_model():
@@ -58,8 +56,6 @@ def apply_safety_detection(video):
 
         out = cv2.VideoWriter(OUTPUT_VIDEO_PATH, fourcc,
                               fps, (int(cap.get(3)), int(cap.get(4))))
-
-        frame_number = 0
 
         frame_number = 0
         safety_count = 0
@@ -150,7 +146,6 @@ def apply_safety_detection(video):
 
     # Calculate percentages based on the total number of detections
     total_detections = safety_count + unsafety_count
-
     # Check if total_detections is not zero before calculating percentages
     if total_detections != 0:
         safety_percentage = (safety_count / total_detections) * 100
