@@ -7,6 +7,7 @@
     <title>Dashboard</title>
   </head>
   <body>
+    <div id="preloader"></div>
     <nav class="navbar">
       <img src="static/images/logo2.png" alt="Logo" />
       <div class="link">
@@ -28,5 +29,13 @@
         </p>
       </div>
     </footer>
+
+    <script>
+      let loader = document.getElementById("preloader");
+
+      window.addEventListener("load", () => {
+        loader.style.display = "none";
+      });
+    </script>
   </body>
 </html>

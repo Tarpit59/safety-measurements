@@ -72,3 +72,13 @@ a:hover {
     color: #080710;
     background-color: white;
 }
+
+#preloader {
+    position: fixed;
+    height: 100vh;
+    width: 100%;
+    background: #000 url("../images/loader.gif") no-repeat center center;
+    background-size: 40%;
+    opacity: 90%;
+    z-index: 100;
+}
