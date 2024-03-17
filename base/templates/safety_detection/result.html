@@ -2,9 +2,20 @@
 <style>
   @import url("static/css/safety_detection_result.css");
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="static/js/safety_detection_result.js"></script>
 
-<div class="safety-container">
-<h1>hi</h1>
+<div class="safety-result-container">
+  <h1>Safety Detection Result</h1>
+  <div>
+    <video src="{{ video }}" controls></video>
+    <div>
+      <h3>Video Name: {{video_name}}</h3>
+      <span hidden id="safety_percentage">{{safety_percentage}}</span>
+      <span hidden id="unsafety_percentage">{{unsafety_percentage}}</span>
+      <canvas id="myChart" class="pie-chart"></canvas>
+    </div>
+  </div>
 </div>
 
 {% endblock %}

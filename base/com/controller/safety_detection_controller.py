@@ -1,6 +1,6 @@
 import os
 from werkzeug.utils import secure_filename
-from flask import render_template, redirect, request,url_for
+from flask import render_template, redirect, request, url_for
 from flask_login import login_user, login_required, current_user
 from base.com.service.safety_service import apply_safety_detection
 from base.com.vo.helmet_vest_detection_vo import HelmetVestDetectionVO
@@ -28,21 +28,26 @@ def safety_detection():
                     app.config['UPLOAD_FOLDER'], filename)
                 video.save(video_path)
                 try:
-                # Apply safety detection
-                    results = apply_safety_detection(video_path)
-                    video_name, safety_percentage, unsafety_percentage = results
-
+                    result = apply_safety_detection(
+                        video_path)
+                    video_name, safety_percentage, unsafety_percentage = result
                     helmet_vest_detection_vo_obj.video_name = video_name
                     helmet_vest_detection_vo_obj.safety_percentage = safety_percentage
                     helmet_vest_detection_vo_obj.unsafety_percentage = unsafety_percentage
 
+                    helmet_vest_detection_dao_obj.save(
+                        helmet_vest_detection_vo_obj)
 
-                    helmet_vest_detection_dao_obj.save(helmet_vest_detection_vo_obj)
-
-                    return render_template('safety_detection/result.html', user=current_user)
+                    return render_template('safety_detection/result.html',
+                                           user=current_user,
+                                           video=f"static/output/output_video.mp4",
+                                           video_name=video_name,
+                                           safety_percentage=safety_percentage,
+                                           unsafety_percentage=unsafety_percentage
+                                           )
                 finally:
                     os.remove(video_path)
-                    
-            return app.config['UPLOAD_FOLDER']
+
+            return render_template('error.html', error="Video not available")
     except Exception as e:
         return render_template('error.html', error=e)

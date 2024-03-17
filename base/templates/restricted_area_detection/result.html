@@ -1,0 +1,21 @@
+{% extends 'base_layout.html' %} {% block content %}
+<style>
+  @import url("static/css/restricted_area_result.css");
+</style>
+<div class="container">
+  <div>
+    <video controls>
+      <source src="{{video}}" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="container-2">
+      <h1>Restricted Area Result</h1>
+      <p>Video Name: <b>{{ video_name }}</b></p>
+      <p>
+        Number of persons detected<br />in the restricted area:
+        <b>{{ person_count }}</b>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,1 +1,39 @@
-@import url("static/css/global.css");
+@import url('global.css');
+
+.safety-result-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2.5rem;
+    color: white;
+    text-align: center;
+}
+
+.safety-result-container>h1 {
+    margin-bottom: 10px;
+}
+
+.safety-result-container>div {
+    display: flex;
+    gap: 10px;
+    width: 80%;
+}
+
+.safety-result-container>div>div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.safety-result-container>div>video {
+    flex: 1;
+    width: 200px;
+}
+
+.pie-chart {
+    width: 100%;
+    max-width: 700px;
+    margin-top: 10px;
+}
