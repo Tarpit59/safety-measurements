@@ -2,9 +2,10 @@
 <style>
   @import url("static/css/safety_detection.css");
 </style>
+<script src="static/js/safety_detection.js"></script>
 
 <div class="safety-container">
-  <form action="safety-detection" method="post" enctype="multipart/form-data">
+  <div>
     <h3>Safety Detection</h3>
 
     <label for="video">Upload Video: </label>
@@ -17,8 +18,8 @@
       accept="video/*"
     />
 
-    <button>Submit</button>
-  </form>
+    <button id="safety-detection-btn">Submit</button>
+  </div>
 </div>
 
 {% endblock %}

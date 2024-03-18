@@ -19,7 +19,7 @@ def unauth_handler():
 def index():
     try:
         return redirect('login')
-    except:
+    except Exception as e:
         return render_template('error.html', error=e)
 
 

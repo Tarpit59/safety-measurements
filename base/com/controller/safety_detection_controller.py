@@ -37,7 +37,6 @@ def safety_detection():
 
                     helmet_vest_detection_dao_obj.save(
                         helmet_vest_detection_vo_obj)
-
                     return render_template('safety_detection/result.html',
                                            user=current_user,
                                            video=f"static/output/output_safety/output_video.mp4",

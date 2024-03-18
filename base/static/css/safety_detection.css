@@ -7,7 +7,7 @@
     margin-top: 2.5rem;
 }
 
-.safety-container form {
+.safety-container div {
     width: 400px;
     background-color: rgba(255, 255, 255, 0.13);
     border-radius: 10px;
@@ -17,7 +17,7 @@
     padding: 50px 35px;
 }
 
-.safety-container form * {
+.safety-container div * {
     font-family: "Poppins", sans-serif;
     color: #ffffff;
     letter-spacing: 0.5px;
@@ -25,7 +25,7 @@
     border: none;
 }
 
-.safety-container form h3 {
+.safety-container div h3 {
     font-size: 32px;
     font-weight: 500;
     line-height: 42px;

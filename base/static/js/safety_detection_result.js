@@ -18,17 +18,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const options = {
       backgroundColor: "transparent",
       fontColor: "#fff",
-      width: 550, 
+      width: 550,
       height: 300,
       legend: {
         textStyle: {
           color: "#fff",
-          fontSize: 18
+          fontSize: 18,
         },
       },
       pieSliceTextStyle: {
         color: "#fff",
-        fontSize: 16
+        fontSize: 16,
       },
     };
 
