@@ -4,11 +4,7 @@
 </style>
 
 <div class="restricted-area-container">
-  <form
-    action="restricted-area-detection"
-    method="post"
-    enctype="multipart/form-data"
-  >
+  <div>
     <h3>Restricted Area Detection</h3>
 
     <label for="video">Upload Video: </label>
@@ -17,12 +13,11 @@
       name="video"
       placeholder="Upload video"
       id="video"
-      required
       accept="video/*"
     />
 
-    <button>Submit</button>
-  </form>
+    <button id="submit-button">Submit</button>
+  </div>
 </div>
-
+<script src="static/js/restricted_area_detection.js"></script>
 {% endblock %}

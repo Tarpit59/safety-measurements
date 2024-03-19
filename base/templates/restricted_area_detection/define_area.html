@@ -33,9 +33,6 @@
         var startX = (canvas.width - img.width) / 2;
         var startY = (canvas.height - img.height) / 2;
 
-        console.log("Image Dimensions:", img.width, img.height);
-        console.log("Canvas Dimensions:", canvas.width, canvas.height);
-
         // Draw the image centered on the canvas
         ctx.drawImage(img, startX, startY, img.width, img.height);
         canvas.addEventListener("click", function (e) {
@@ -69,8 +66,12 @@
         }
         // // Push videoPath once for the whole set of coordinates
         // coordinates.push({ video_path: videoPath });
-
         var coordinatesJSON = JSON.stringify({ coordinates: coordinates });
+        let isLoaded = false;
+
+        if (!isLoaded) {
+          document.getElementById("preloader").style.display = "block";
+        }
 
         axios
           .post(processUrl, coordinatesJSON, {
@@ -80,25 +81,26 @@
           })
           // Send coordinates directly as JSON
           .then((response) => {
-            console.log("Response Headers:", response.headers);
-            console.log("Response Status:", response.status);
+            isLoaded = true;
             return response.data;
           })
           .then((data) => {
-            console.log("Response Data:", data);
             if (data && data.success) {
               window.location.href = "{{ url_for('restricted_area_result') }}";
             } else {
-              console.error("Error in processing coordinates:", data.error);
               alert(
                 "An error occurred while processing the coordinates. Please try again."
               );
             }
           })
           .catch((error) => {
-            console.error("Error:", error);
             alert("An unexpected error occurred. Please try again.");
+            isLoaded = true;
           });
+
+        if (isLoaded) {
+          document.getElementById("preloader").style.display = "none";
+        }
       });
 
     loadImage();

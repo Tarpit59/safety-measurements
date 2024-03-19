@@ -3,9 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function onSubmitBtn() {
-  let btn = document.getElementById("safety-detection-btn");
+  let submit = document.getElementById("submit-button");
 
-  btn.addEventListener("click", async () => {
+  submit.addEventListener("click", async () => {
     let video = document.getElementById("video");
     if (!video.files[0]) {
       alert("Please upload video");
@@ -19,7 +19,7 @@ function onSubmitBtn() {
         document.getElementById("preloader").style.display = "block";
       }
 
-      const res = await fetch("safety-detection", {
+      const res = await fetch("restricted-area-detection", {
         method: "POST",
         body: formData,
       })
