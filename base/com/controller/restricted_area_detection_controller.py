@@ -60,7 +60,6 @@ def define_area():
 @app.route('/process-restricted-area', methods=['GET', "POST"])
 @login_required
 def process_restricted_area():
-    restricted_area_vo_obj = RestrictedAreaVO()
     restricted_area_dao_obj = RestrictedAreaDAO()
     try:
         if request.method != 'POST':
@@ -70,9 +69,11 @@ def process_restricted_area():
         # Ensure data is a dictionary and has 'coordinates' key
         if isinstance(data, dict) and 'coordinates' in data:
             coordinates = data['coordinates']
+            
             # Convert coordinates to the desired format [(x1, y1), (x2, y2), ...]
             converted_coordinates = [(round(coord['x']), round(
                 coord['y'])) for coord in coordinates if 'x' in coord and 'y' in coord]
+            print(converted_coordinates)
             # Automatically detect the video path from the uploaded files in the UPLOAD_FOLDER
             uploaded_files = os.listdir(app.config['UPLOAD_FOLDER'])
             if uploaded_files:
@@ -85,17 +86,32 @@ def process_restricted_area():
                 video_path = os.path.join(
                     app.config['UPLOAD_FOLDER'], latest_uploaded_file)
 
-            person_count = count_persons_entered_restricted_area(
+            result = count_persons_entered_restricted_area(
                 video_path,
                 converted_coordinates
             )
+            person_count, list_of_timestamp = result
+            print(person_count, list_of_timestamp)
 
-            restricted_area_vo_obj.person_count = person_count
-            restricted_area_vo_obj.video_name = latest_uploaded_file
-            restricted_area_dao_obj.save(restricted_area_vo_obj)
-
+            
+            if person_count > 0:
+                for data in list_of_timestamp:
+                    restricted_area_vo_obj = RestrictedAreaVO()
+                    restricted_area_vo_obj.person_count = person_count
+                    restricted_area_vo_obj.video_name = latest_uploaded_file
+                    restricted_area_vo_obj.person_id = data.get('id')
+                    restricted_area_vo_obj.entry_time = data.get('enter_time')
+                    restricted_area_vo_obj.exit_time = data.get('exit_time')
+                    restricted_area_dao_obj.save(restricted_area_vo_obj)
+            else:
+                restricted_area_vo_obj = RestrictedAreaVO()
+                restricted_area_vo_obj.person_count = person_count
+                restricted_area_vo_obj.video_name = latest_uploaded_file
+                restricted_area_dao_obj.save(restricted_area_vo_obj)
+                
             # Store person_count in the session
             session['person_count'] = person_count
+           
             # Redirect to the restricted_area_result route with the person count as a parameter
             return jsonify({'success': True, 'person_count': person_count})
         else:

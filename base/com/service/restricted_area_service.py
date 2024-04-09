@@ -1,3 +1,4 @@
+import time
 import cv2
 import numpy as np
 from shapely.geometry import Polygon
@@ -33,6 +34,9 @@ def count_persons_entered_restricted_area(video, coordinates):
     color_person_inside = (0, 0, 255)  # Red
     color_person_outside = (0, 255, 0)  # Green
 
+    # Dictionary to store enter and exit times for each person ID
+    person_time_dict = {}
+
     while True:
         ret, frame = video_capture.read()
 
@@ -57,11 +61,12 @@ def count_persons_entered_restricted_area(video, coordinates):
             intersection_area = restricted_area_shapely.intersection(person_polygon_shapely).area
             union_area = restricted_area_shapely.union(person_polygon_shapely).area
             iou = intersection_area / union_area if union_area > 0 else 0
-
+        
             # Check if person is inside or outside the restricted area
             if names.get(class_id) == 'person':
                 person_id = int(box[4])
-                if iou > 0:
+                current_time = time.time()  # Current epoch time
+                if iou > 0.01:
                     # persons_entered_count += 1
                     cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color_person_inside, 2)
                     cv2.putText(frame, f'Id:{person_id}', (int(x1), int(y1) - 10),
@@ -73,10 +78,17 @@ def count_persons_entered_restricted_area(video, coordinates):
                     if person_id not in entering_persons or not entering_persons[person_id]:
                         entering_persons[person_id] = True
                         persons_entered_count += 1
+                        if person_id not in person_time_dict:
+                            person_time_dict[person_id] = {'enter_time': current_time, 'exit_time': None}
                 else:
                     cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color_person_outside, 2)
                     cv2.putText(frame, f'Id:{person_id}', (int(x1), int(y1) - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+                    
+                        # If the person has entered before, update exit time only if they haven't exited before
+                    if person_id in entering_persons and entering_persons[person_id]:
+                        if person_id in person_time_dict and person_time_dict[person_id]['exit_time'] is None:
+                            person_time_dict[person_id]['exit_time'] = current_time
 
         # Display count of persons entered in the top-left corner
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -84,9 +96,10 @@ def count_persons_entered_restricted_area(video, coordinates):
 
         # Write the frame to the output video
         out.write(frame)
+    list_of_timestamp = [{**{'id': key}, **value} for key, value in person_time_dict.items()]
     video_capture.release()
     out.release()
-    return persons_entered_count
+    return persons_entered_count, list_of_timestamp
 
 def store_uploaded_video(video):
     video_filename = secure_filename(video.filename)
