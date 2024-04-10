@@ -6,8 +6,8 @@ from base.com.dao.user_dao import UserDAO
 
 
 @login_manager.user_loader
-def loader_user(id):
-    return UserVO.query.get(id)
+def loader_user(login_id):
+    return UserVO.query.get(login_id)
 
 
 @app.login_manager.unauthorized_handler
@@ -33,31 +33,13 @@ def login():
         else:
             username = request.form.get('username')
             password = request.form.get('password')
-            user_vo.username = username
-            user_vo.password = password
+            user_vo.login_username = username
+            user_vo.login_password = password
             user = user_dao.view_one_user(user_vo)
             if user:
-                login_user(user, remember=True)
+                login_user(user)
                 return redirect('/dashboard')
             return render_template('user/login.html', credentials="Invalid  Credentials")
-    except Exception as e:
-        return render_template('error.html', error=e)
-
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    try:
-        user_dao = UserDAO()
-        user_vo = UserVO()
-        if request.method == 'GET':
-            return render_template('user/register.html')
-        else:
-            username = request.form.get('username')
-            password = request.form.get('password')
-            user_vo.username = username
-            user_vo.password = password
-            user = user_dao.save(user_vo)
-            return redirect('login')
     except Exception as e:
         return render_template('error.html', error=e)
 
