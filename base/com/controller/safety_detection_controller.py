@@ -41,7 +41,6 @@ def safety_detection():
                     detection_vo_obj.input_file_path = input_video_path
                     detection_vo_obj.output_file_path = output_video_name
                     detection_vo_obj.detection_type = 'safety'
-                    detection_vo_obj.detection_source = ''
                     detection_vo_obj.is_deleted = False
                     detection_vo_obj.created_on = int(
                         datetime.datetime.now().timestamp())

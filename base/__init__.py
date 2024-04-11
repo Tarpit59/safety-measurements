@@ -18,6 +18,7 @@ app.config['SAFETY_MODEL'] = r"model\best.pt"
 app.config['RESTRICTED_MODEL'] = r"model\yolov8n.pt"
 
 app.config['RESTRICTED_UPLOAD_FOLDER'] = r'base\static\upload\restricted'
+app.config['FIRST_FRAME_FOLDER'] = r'base\static\first_frame'
 app.config['SAFETY_UPLOAD_FOLDER'] = r'base\static\upload\safety'
 
 app.config['RESTRICTED_OUTPUT_FOLDER'] = r'base\static\output\restricted'
