@@ -1,8 +1,8 @@
 from base import app, db
-from base.com.vo.restricted_vo import RestrictedAreaVO
+from base.com.vo.detection_vo import DetectionVO
 
 
 class RestrictedAreaDAO():
-    def save(self, restricted_area_detection_vo_obj):
-        db.session.add(restricted_area_detection_vo_obj)
+    def save(self, detection_vo_obj):
+        db.session.add(detection_vo_obj)
         db.session.commit()

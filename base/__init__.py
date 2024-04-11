@@ -13,9 +13,15 @@ login_manager.init_app(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/safety_measurements_2?charset=utf8'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Upload folder path
-UPLOAD_FOLDER = 'base/static/upload'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# Path configuration
+app.config['SAFETY_MODEL'] = r"model\best.pt"
+app.config['RESTRICTED_MODEL'] = r"model\yolov8n.pt"
+
+app.config['RESTRICTED_UPLOAD_FOLDER'] = r'base\static\upload\restricted'
+app.config['SAFETY_UPLOAD_FOLDER'] = r'base\static\upload\safety'
+
+app.config['RESTRICTED_OUTPUT_FOLDER'] = r'base\static\output\restricted'
+app.config['SAFETY_OUTPUT_FOLDER'] = r'base\static\output\safety'
 
 # Database instance
 db = SQLAlchemy(app)
