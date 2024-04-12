@@ -46,7 +46,6 @@ def define_area():
         if request.method == 'GET':
             return render_template(
                 'restricted_area_detection/define_area.html',
-                video_path=input_filename,
                 first_frame_path=first_frame_path,
                 user=current_user
             )

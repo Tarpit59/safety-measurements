@@ -13,7 +13,6 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     var coordinates = [];
-    var videoPath = "{{ video_path.replace('\\', '\\\\') }}";
     var firstFramePath =
       "{{ url_for('static', filename='first_frame/first_frame.jpg', _external=True).replace('\\', '\\\\') }}";
 
@@ -56,16 +55,6 @@
     document
       .getElementById("submitCoordinates")
       .addEventListener("click", function () {
-        var videoPathExists = coordinates.some(
-          (coord) => "video_path" in coord
-        );
-
-        if (!videoPathExists) {
-          // Push videoPath once for the whole set of coordinates
-          coordinates.push({ video_path: videoPath });
-        }
-        // // Push videoPath once for the whole set of coordinates
-        // coordinates.push({ video_path: videoPath });
         var coordinatesJSON = JSON.stringify({ coordinates: coordinates });
         let isLoaded = false;
 
