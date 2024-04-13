@@ -1,0 +1,35 @@
+{% extends 'base_layout.html' %} {% block content %}
+<style>
+  @import url("static/css/view_detection.css");
+</style>
+<script src="static/js/view.js"></script>
+
+<table class="rwd-table">
+  <tbody>
+    <tr>
+      <th>Sr No.</th>
+      <th>Input Video</th>
+      <th>Output Video</th>
+      <th>Type</th>
+      <th>Source</th>
+      <th>Statstics</th>
+      <th>Action</th>
+      <th>Detection Time</th>
+    </tr>
+
+    {% for i in data %}
+    <tr>
+      <td>{{i['sr_no']}}</td>
+      <td>{{i['input_file_path']}}</td>
+      <td>{{i['output_file_path']}}</td>
+      <td>{{i['detection_type']}}</td>
+      <td>{{i['detection_source']}}</td>
+      <td class="view">View</td>
+      <td><a href="">Delete</a></td>
+      <td>{{i['detection_datetime']}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
