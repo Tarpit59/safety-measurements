@@ -22,6 +22,3 @@ class UserDAO():
     def save(self, user_vo):
         db.session.add(user_vo)
         db.session.commit()
-
-    def get_detection_records(self):
-        return DetectionVO.query.filter_by(is_deleted=False).filter_by(created_by=current_user.login_id).all()

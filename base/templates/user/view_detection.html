@@ -2,7 +2,7 @@
 <style>
   @import url("static/css/view_detection.css");
 </style>
-<script src="static/js/view.js"></script>
+<script src="static/js/view_detection.js"></script>
 
 <table class="rwd-table">
   <tbody>
@@ -25,7 +25,9 @@
       <td>{{i['detection_type']}}</td>
       <td>{{i['detection_source']}}</td>
       <td class="view">View</td>
-      <td><a href="">Delete</a></td>
+      <td>
+        <a class="viewDetectionDelete" data="{{i['detection_id']}}">Delete</a>
+      </td>
       <td>{{i['detection_datetime']}}</td>
     </tr>
     {% endfor %}

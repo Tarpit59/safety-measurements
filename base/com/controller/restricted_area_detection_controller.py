@@ -6,7 +6,7 @@ from flask import render_template, redirect, request, url_for, jsonify, session
 from flask_login import login_required, current_user
 from base.com.service.restricted_area_service import get_first_frame, store_uploaded_video, count_persons_entered_restricted_area
 from base.com.vo.detection_vo import DetectionVO
-from base.com.dao.restricted_area_detection_dao import RestrictedAreaDAO
+from base.com.dao.detection_dao import DetectionDAO
 from base import app
 
 
@@ -58,7 +58,7 @@ def define_area():
 @app.route('/process-restricted-area', methods=['GET', "POST"])
 @login_required
 def process_restricted_area():
-    restricted_area_dao_obj = RestrictedAreaDAO()
+    detection_dao_obj = DetectionDAO()
     detection_vo_obj = DetectionVO()
     try:
         if request.method != 'POST':
@@ -96,7 +96,7 @@ def process_restricted_area():
                 result_percentage)
             detection_vo_obj.detection_source = 'video'
 
-            restricted_area_dao_obj.save(detection_vo_obj)
+            detection_dao_obj.save(detection_vo_obj)
 
             # Store person_count in the session
             session['person_count'] = result_percentage.get('count')

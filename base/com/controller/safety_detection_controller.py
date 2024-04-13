@@ -6,7 +6,7 @@ from flask import render_template, request, session
 from flask_login import login_required, current_user
 from base.com.service.safety_service import apply_safety_detection
 from base.com.vo.detection_vo import DetectionVO
-from base.com.dao.safety_detection_dao import HelmetVestDetectionDAO
+from base.com.dao.detection_dao import DetectionDAO
 from base import app
 
 
@@ -14,7 +14,7 @@ from base import app
 @login_required
 def safety_detection():
     detection_vo_obj = DetectionVO()
-    helmet_vest_detection_dao_obj = HelmetVestDetectionDAO()
+    detection_dao_obj = DetectionDAO()
     try:
         if request.method == 'GET':
             return render_template('safety_detection/index.html', user=current_user)
@@ -50,7 +50,7 @@ def safety_detection():
                         result_percentage)
                     detection_vo_obj.detection_source = 'video'
 
-                    helmet_vest_detection_dao_obj.save(
+                    detection_dao_obj.save(
                         detection_vo_obj)
                     return render_template('safety_detection/result.html',
                                            user=current_user,

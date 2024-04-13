@@ -68,6 +68,7 @@
 
 .rwd-table a {
     color: #FC9800;
+    cursor: pointer;
 }
 
 .rwd-table .view {
