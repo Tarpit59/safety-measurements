@@ -3,10 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
     <link rel="stylesheet" href="static/css/global.css" />
     <title>Dashboard</title>
   </head>
   <body>
+    <div id="preloader"></div>
     <nav class="navbar">
       <img src="static/images/logo2.png" alt="Logo" />
       <div class="link">
@@ -15,7 +17,7 @@
         <a href="restricted-area-detection">Restricted Area Detection</a>
       </div>
       <div class="user">
-        <p>Welcome <b>{{user.username.capitalize()}}</b></p>
+        <p>Welcome <b>{{user.login_username.capitalize()}}</b></p>
         <a class="logout" href="logout">Logout</a>
       </div>
     </nav>
@@ -28,5 +30,13 @@
         </p>
       </div>
     </footer>
+
+    <script>
+      let loader = document.getElementById("preloader");
+
+      window.addEventListener("load", () => {
+        loader.style.display = "none";
+      });
+    </script>
   </body>
 </html>

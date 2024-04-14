@@ -1,9 +1,11 @@
 import os
+import datetime
+import json
 from werkzeug.utils import secure_filename
-from flask import render_template, redirect, request, url_for
-from flask_login import login_user, login_required, current_user
+from flask import render_template, request, session
+from flask_login import login_required, current_user
 from base.com.service.safety_service import apply_safety_detection
-from base.com.vo.helmet_vest_detection_vo import HelmetVestDetectionVO
+from base.com.vo.detection_vo import DetectionVO
 from base.com.dao.safety_detection_dao import HelmetVestDetectionDAO
 from base import app
 
@@ -11,7 +13,7 @@ from base import app
 @app.route('/safety-detection', methods=['GET', 'POST'])
 @login_required
 def safety_detection():
-    helmet_vest_detection_vo_obj = HelmetVestDetectionVO()
+    detection_vo_obj = DetectionVO()
     helmet_vest_detection_dao_obj = HelmetVestDetectionDAO()
     try:
         if request.method == 'GET':
@@ -20,33 +22,45 @@ def safety_detection():
             video = request.files.get('video')
 
             if video:
-                if not os.path.exists(app.config['UPLOAD_FOLDER']):
-                    os.makedirs(app.config['UPLOAD_FOLDER'])
-
-                filename = secure_filename(video.filename)
-                video_path = os.path.join(
-                    app.config['UPLOAD_FOLDER'], filename)
-                video.save(video_path)
+                real_filename = secure_filename(video.filename)
+                filename = real_filename.split('.')
+                filename = f"{filename[0]} ({int(datetime.datetime.now().timestamp())}).{filename[1]}"
+                input_video_path = os.path.join(
+                    app.config['SAFETY_UPLOAD_FOLDER'], filename)
+                video.save(input_video_path)
                 try:
+                    detection_vo_obj.detection_datetime = int(
+                        datetime.datetime.now().timestamp())
+
                     result = apply_safety_detection(
-                        video_path)
-                    video_name, safety_percentage, unsafety_percentage = result
-                    helmet_vest_detection_vo_obj.video_name = video_name
-                    helmet_vest_detection_vo_obj.safety_percentage = safety_percentage
-                    helmet_vest_detection_vo_obj.unsafety_percentage = unsafety_percentage
+                        input_video_path)
+                    output_video_name, result_percentage = result
+
+                    detection_vo_obj.created_by = current_user.login_id
+                    detection_vo_obj.modified_by = current_user.login_id
+                    detection_vo_obj.input_file_path = input_video_path
+                    detection_vo_obj.output_file_path = output_video_name
+                    detection_vo_obj.detection_type = 'safety'
+                    detection_vo_obj.is_deleted = False
+                    detection_vo_obj.created_on = int(
+                        datetime.datetime.now().timestamp())
+                    detection_vo_obj.modified_on = int(
+                        datetime.datetime.now().timestamp())
+                    detection_vo_obj.detection_stats = json.dumps(
+                        result_percentage)
+                    detection_vo_obj.detection_source = 'video'
 
                     helmet_vest_detection_dao_obj.save(
-                        helmet_vest_detection_vo_obj)
-
+                        detection_vo_obj)
                     return render_template('safety_detection/result.html',
                                            user=current_user,
-                                           video=f"static/output/output_video.mp4",
-                                           video_name=video_name,
-                                           safety_percentage=safety_percentage,
-                                           unsafety_percentage=unsafety_percentage
+                                           video=output_video_name[4:],
+                                           video_name=real_filename.upper(),
+                                           result_percentage=result_percentage
                                            )
                 finally:
-                    os.remove(video_path)
+                    # os.remove(input_video_path)
+                    session.clear()
 
             return render_template('error.html', error="Video not available")
     except Exception as e:

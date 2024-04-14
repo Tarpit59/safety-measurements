@@ -2,22 +2,16 @@ import os
 from ultralytics import YOLO
 import cv2
 import logging
-from base.com.vo.helmet_vest_detection_vo import HelmetVestDetectionVO
-from base import db
 import tempfile
 import shutil
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-
-# Consider moving model initialization outside the function and make it a configurable parameter
-MODEL_PATH = r"model\best.pt"
-OUTPUT_FOLDER = r"base\static\output"
-OUTPUT_VIDEO_PATH = r"base\static\output\output_video.mp4"
+from base import app
 
 
 def initialize_model():
-    return YOLO(MODEL_PATH)
+    return YOLO(app.config['SAFETY_MODEL'])
 
 
 def draw_text_and_box_on_image(image, text, position, box_coordinates, font, color):
@@ -32,34 +26,26 @@ def draw_text_and_box_on_image(image, text, position, box_coordinates, font, col
     return image
 
 
-def apply_safety_detection(video):
+def apply_safety_detection(input_video_path):
     model = initialize_model()
+    video_base_name = os.path.basename(input_video_path)
 
-    # Create a temporary directory to store the video
-    temp_dir = tempfile.mkdtemp()
-    video_name = os.path.basename(video)
-    temp_video_path = os.path.join(temp_dir, os.path.basename(video))
     try:
-        # Copy the uploaded video to the temporary folder
-        shutil.copy(video, temp_video_path)
-
-        # Open the video capture
-        cap = cv2.VideoCapture(temp_video_path)
+        cap = cv2.VideoCapture(input_video_path)
 
         # Get the frames per second (fps) of the input video
         fps = cap.get(cv2.CAP_PROP_FPS)
-        # Create output folder if it doesn't exist
-        if not os.path.exists(OUTPUT_FOLDER):
-            os.makedirs(OUTPUT_FOLDER)
 
         # Create VideoWriter object with the same fps as the input video
         fourcc = cv2.VideoWriter_fourcc(*'avc1')
         # fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
 
-        out = cv2.VideoWriter(OUTPUT_VIDEO_PATH, fourcc,
-                              fps, (int(cap.get(3)), int(cap.get(4))))
-
-        frame_number = 0
+        output_video_path = f"{app.config['SAFETY_OUTPUT_FOLDER']}\{video_base_name}"
+        out = cv2.VideoWriter(output_video_path,
+                              fourcc,
+                              fps,
+                              (int(cap.get(3)), int(cap.get(4)))
+                              )
 
         frame_number = 0
         safety_count = 0
@@ -150,12 +136,14 @@ def apply_safety_detection(video):
 
     # Calculate percentages based on the total number of detections
     total_detections = safety_count + unsafety_count
-
     # Check if total_detections is not zero before calculating percentages
     if total_detections != 0:
         safety_percentage = (safety_count / total_detections) * 100
         unsafety_percentage = (unsafety_count / total_detections) * 100
     else:
-        return video_name, None, None
+        return output_video_path, None, None
 
-    return video_name, round(safety_percentage, 2), round(unsafety_percentage, 2)
+    return output_video_path, {
+        'safety': round(safety_percentage, 2),
+        'unsafety': round(unsafety_percentage, 2)
+    }

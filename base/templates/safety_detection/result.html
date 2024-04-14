@@ -3,17 +3,22 @@
   @import url("static/css/safety_detection_result.css");
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="static/js/safety_detection_result.js"></script>
 
 <div class="safety-result-container">
-  <h1>Safety Detection Result</h1>
   <div>
     <video src="{{ video }}" controls></video>
-    <div>
-      <h3>Video Name: {{video_name}}</h3>
-      <span hidden id="safety_percentage">{{safety_percentage}}</span>
-      <span hidden id="unsafety_percentage">{{unsafety_percentage}}</span>
-      <canvas id="myChart" class="pie-chart"></canvas>
+    <div class="container-2">
+      <h1>Safety Detection Result</h1>
+      <p>Video Name: <b>{{ video_name }}</b></p>
+      <span hidden id="safety_percentage"
+        >{{result_percentage.get('safety')}}</span
+      >
+      <span hidden id="unsafety_percentage"
+        >{{result_percentage.get('unsafety')}}</span
+      >
+      <div id="myChart"></div>
     </div>
   </div>
 </div>
