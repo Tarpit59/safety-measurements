@@ -31,7 +31,7 @@ a:hover {
   font-size: 18px;
   text-align: center;
   color: white;
-  background-color: #080710;
+  background-color: rgb(79, 78, 78);
 }
 
 .navbar > .link {

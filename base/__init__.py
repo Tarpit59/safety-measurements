@@ -10,7 +10,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 # Configure MySQL database connection
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/safety_measurements_2?charset=utf8'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/internship?charset=utf8'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Path configuration
