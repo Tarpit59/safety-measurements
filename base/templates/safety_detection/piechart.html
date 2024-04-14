@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(var(--colors));
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .pie-chart:hover {
+            transform: scale(1.1); /* Scale up on hover */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add box-shadow on hover for a pop-out effect */
+        }
+
+        /* Optional: Center the pie chart */
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+    <title>Custom Color Pie Chart with Pop-out Hover</title>
+</head>
+<body>
+    <div class="pie-chart"></div>
+
+    <script>
+        // Sample dynamic data and corresponding custom colors
+        const data = [25, 35, 40];
+        const customColors = ['#3498db', '#e74c3c', '#2ecc71'];
+
+        // Calculate color stops for the conic gradient based on data and custom colors
+        const colors = data.map((percentage, index, array) => {
+            const start = array.slice(0, index).reduce((sum, value) => sum + value, 0);
+            const end = start + percentage;
+            const color = customColors[index];
+            return `${color} ${start}% ${end}%`;
+        }).join(', ');
+
+        // Apply the conic gradient to the pie chart
+        const pieChart = document.querySelector('.pie-chart');
+        pieChart.style.setProperty('--colors', colors);
+    </script>
+</body>
+</html>

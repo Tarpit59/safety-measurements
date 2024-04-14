@@ -9,7 +9,7 @@ def connect_to_database():
             host="localhost",
             user="root",
             password="root",
-            db="safety_measurements_2",
+            db="internship",
             charset='utf8',
         )
         return connection
