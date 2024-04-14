@@ -50,7 +50,10 @@ def login():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', user=current_user)
+    try:
+        return render_template('dashboard.html', user=current_user)
+    except Exception as e:
+        return render_template('error.html', error=e)
 
 
 @app.route('/view-detection', methods=['GET'])
@@ -66,7 +69,7 @@ def view_detection():
                 detection_vo_obj.modified_by = current_user.login_id
                 detection_vo_obj.is_deleted = True
                 detection_vo_obj.modified_on = int(datetime.now().timestamp())
-                
+
                 detection_dao_obj.update_record(detection_vo_obj)
 
             data = detection_dao_obj.get_user_records()
@@ -90,6 +93,15 @@ def view_detection():
 
             return render_template('user/view_detection.html', user=current_user, data=customized_data)
 
+    except Exception as e:
+        return render_template('error.html', error=e)
+
+
+@app.route("/about")
+@login_required
+def about():
+    try:
+        return render_template('about.html', user=current_user)
     except Exception as e:
         return render_template('error.html', error=e)
 
