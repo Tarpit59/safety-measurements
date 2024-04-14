@@ -8,6 +8,7 @@
   <tbody>
     <tr>
       <th>Sr No.</th>
+      <th>Filename</th>
       <th>Input Video</th>
       <th>Output Video</th>
       <th>Type</th>
@@ -20,11 +21,28 @@
     {% for i in data %}
     <tr>
       <td>{{i['sr_no']}}</td>
-      <td>{{i['input_file_path']}}</td>
-      <td>{{i['output_file_path']}}</td>
+      <td>{{i['original_filename']}}</td>
+      <td>
+        <a
+          class="view-file tooltip"
+          href="{{i['input_file_url']}}"
+          target="_blank"
+          >View
+          <span class="tooltiptext">{{i['input_file_path']}}</span>
+        </a>
+      </td>
+      <td>
+        <a
+          class="view-file tooltip"
+          href="{{i['output_file_url']}}"
+          target="_blank"
+          >View
+          <span class="tooltiptext">{{i['output_file_path']}}</span>
+        </a>
+      </td>
       <td>{{i['detection_type']}}</td>
       <td>{{i['detection_source']}}</td>
-      <td class="view">View</td>
+      <td class="view" data="{{i['detection_stats']}}">View</td>
       <td>
         <a class="viewDetectionDelete" data="{{i['detection_id']}}">Delete</a>
       </td>
@@ -33,5 +51,36 @@
     {% endfor %}
   </tbody>
 </table>
+
+<div class="popup-container" id="popup-container">
+  <div class="popup" id="popup">
+    <div class="popup-title" id="popup-title">
+      <p id="popup-heading"></p>
+      <p class="popup-title-cross" onclick="closePopup()">&#10006;</p>
+    </div>
+    <p class="popup-data" id="popup-data">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis neque aut
+      assumenda architecto blanditiis quisquam itaque vero excepturi, nesciunt
+      sequi similique voluptatibus. Eos, tenetur quasi! Autem natus quia dolore
+      totam. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+      qui doloribus rerum temporibus ipsa harum repudiandae recusandae, illo
+      iure sunt nulla eligendi voluptatem. Dolor, nulla provident deserunt ipsum
+      recusandae commodi. Lorem ipsum dolor sit amet consectetur adipisicing
+      elit. Quisquam qui doloribus rerum temporibus ipsa harum repudiandae
+      recusandae, illo iure sunt nulla eligendi voluptatem. Dolor, nulla
+      provident deserunt ipsum recusandae commodi. Lorem ipsum dolor sit amet
+      consectetur adipisicing elit. Quisquam qui doloribus rerum temporibus ipsa
+      harum repudiandae recusandae, illo iure sunt nulla eligendi voluptatem.
+      Dolor, nulla provident deserunt ipsum recusandae commodi. Lorem ipsum
+      dolor sit amet consectetur adipisicing elit. Quisquam qui doloribus rerum
+      temporibus ipsa harum repudiandae recusandae, illo iure sunt nulla
+      eligendi voluptatem. Dolor, nulla provident deserunt ipsum recusandae
+      commodi. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
+      qui doloribus rerum temporibus ipsa harum repudiandae recusandae, illo
+      iure sunt nulla eligendi voluptatem. Dolor, nulla provident deserunt ipsum
+      recusandae commodi.
+    </p>
+  </div>
+</div>
 
 {% endblock %}
