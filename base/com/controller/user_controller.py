@@ -4,6 +4,7 @@ from flask_login import login_user, login_required, current_user, logout_user
 from base import app, login_manager
 from base.com.vo.user_vo import UserVO
 from base.com.dao.user_dao import UserDAO
+from base.com.vo.detection_vo import DetectionVO
 from base.com.dao.detection_dao import DetectionDAO
 
 
@@ -60,8 +61,14 @@ def view_detection():
         if request.method == 'GET':
             detection_id = request.args.get('detection_id')
             if detection_id:
-                pass
-            
+                detection_vo_obj = DetectionVO()
+                detection_vo_obj.detection_id = detection_id
+                detection_vo_obj.modified_by = current_user.login_id
+                detection_vo_obj.is_deleted = True
+                detection_vo_obj.modified_on = int(datetime.now().timestamp())
+                
+                detection_dao_obj.update_record(detection_vo_obj)
+
             data = detection_dao_obj.get_user_records()
 
             customized_data = []

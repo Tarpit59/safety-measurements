@@ -1,6 +1,6 @@
 import os
-import datetime
 import json
+from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask import render_template, redirect, request, url_for, jsonify, session
 from flask_login import login_required, current_user
@@ -74,7 +74,7 @@ def process_restricted_area():
                 coord['y'])) for coord in coordinates if 'x' in coord and 'y' in coord]
 
             detection_vo_obj.detection_datetime = int(
-                datetime.datetime.now().timestamp())
+                datetime.now().timestamp())
             result = count_persons_entered_restricted_area(
                 session.get('stored_file_path'),
                 converted_coordinates
@@ -89,9 +89,9 @@ def process_restricted_area():
             detection_vo_obj.detection_type = 'restricted'
             detection_vo_obj.is_deleted = False
             detection_vo_obj.created_on = int(
-                datetime.datetime.now().timestamp())
+                datetime.now().timestamp())
             detection_vo_obj.modified_on = int(
-                datetime.datetime.now().timestamp())
+                datetime.now().timestamp())
             detection_vo_obj.detection_stats = json.dumps(
                 result_percentage)
             detection_vo_obj.detection_source = 'video'

@@ -1,6 +1,6 @@
 import os
-import datetime
 import json
+from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask import render_template, request, session
 from flask_login import login_required, current_user
@@ -24,13 +24,13 @@ def safety_detection():
             if video:
                 real_filename = secure_filename(video.filename)
                 filename = real_filename.split('.')
-                filename = f"{filename[0]} ({int(datetime.datetime.now().timestamp())}).{filename[1]}"
+                filename = f"{filename[0]} ({int(datetime.now().timestamp())}).{filename[1]}"
                 input_video_path = os.path.join(
                     app.config['SAFETY_UPLOAD_FOLDER'], filename)
                 video.save(input_video_path)
                 try:
                     detection_vo_obj.detection_datetime = int(
-                        datetime.datetime.now().timestamp())
+                        datetime.now().timestamp())
 
                     result = apply_safety_detection(
                         input_video_path)
@@ -43,9 +43,9 @@ def safety_detection():
                     detection_vo_obj.detection_type = 'safety'
                     detection_vo_obj.is_deleted = False
                     detection_vo_obj.created_on = int(
-                        datetime.datetime.now().timestamp())
+                        datetime.now().timestamp())
                     detection_vo_obj.modified_on = int(
-                        datetime.datetime.now().timestamp())
+                        datetime.now().timestamp())
                     detection_vo_obj.detection_stats = json.dumps(
                         result_percentage)
                     detection_vo_obj.detection_source = 'video'
