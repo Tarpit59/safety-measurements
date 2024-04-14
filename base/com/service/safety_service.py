@@ -46,7 +46,7 @@ def apply_safety_detection(input_video_path):
                               fps,
                               (int(cap.get(3)), int(cap.get(4)))
                               )
-
+        class_counts = {}
         frame_number = 0
         safety_count = 0
         unsafety_count = 0
@@ -115,6 +115,10 @@ def apply_safety_detection(input_video_path):
                     if not detection_occurred:
                         detection_occurred = True
 
+                    if class_id not in class_counts:
+                        class_counts[class_id] = 0
+                    class_counts[class_id] += 1
+
                     if class_id in safety_classes:
                         safety_count += 1
                     else:
@@ -133,17 +137,25 @@ def apply_safety_detection(input_video_path):
     finally:
         # Release the video capture
         cap.release()
+        out.release()
 
     # Calculate percentages based on the total number of detections
     total_detections = safety_count + unsafety_count
     # Check if total_detections is not zero before calculating percentages
     if total_detections != 0:
+        class_percentages = {class_id: (
+            count / total_detections) * 100 for class_id, count in class_counts.items()}
         safety_percentage = (safety_count / total_detections) * 100
         unsafety_percentage = (unsafety_count / total_detections) * 100
     else:
-        return output_video_path, None, None
+        return output_video_path, None, None, None
 
     return output_video_path, {
+        'type': 'Safety',
         'safety': round(safety_percentage, 2),
-        'unsafety': round(unsafety_percentage, 2)
+        'unsafety': round(unsafety_percentage, 2),
+        'helmet': round(class_percentages.get('Helmet', 0), 2),
+        'no_helmet': round(class_percentages.get('NOHelmet', 0), 2),
+        'vest': round(class_percentages.get('Vest', 0), 2),
+        'no_vest': round(class_percentages.get('NOVest', 0), 2),
     }

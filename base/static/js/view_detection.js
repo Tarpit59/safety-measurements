@@ -47,12 +47,54 @@ function viewPopup() {
     element.addEventListener("click", async () => {
       let detection_stats = JSON.parse(element.getAttribute("data"));
 
-      let popupData = document.getElementById("popup-data");
       let popupContainer = document.getElementById("popup-container");
+      let popupData = document.getElementById("popup-data");
 
       document.getElementById(
         "popup-heading"
-      ).innerHTML = `${detection_stats.type.toUpperCase()} Statstics`;
+      ).innerHTML = `${detection_stats.type} Statstics`;
+
+      if (detection_stats.type == "Safety") {
+        let html = `
+        <p>Helmet = ${detection_stats.helmet}%</P>
+        <p>No Helmet = ${detection_stats.no_helmet}%</P>
+        <p>Vest = ${detection_stats.vest}%</P>
+        <p>No Vest = ${detection_stats.no_vest}%</P>
+        <p>Safety(Helmet + Vest) = ${detection_stats.safety}%</P>
+        <p>Unsafety(No Helmet + No Vest) = ${detection_stats.unsafety}%</P>
+        `;
+        popupData.innerHTML = html;
+      } else if (detection_stats.type == "Restricted Area") {
+              let html = `
+        <p>Person count = ${detection_stats.count}</p>
+        `;
+        html += `<table class="rwd-table">
+        <tbody>
+        <tr>
+        <td>Id</td>
+        <td>Entry time</td>
+        <td>Exit time</td>
+        </tr>
+        `;
+        for (let i = 0; i < detection_stats.stats.length; i++) {
+          let enter = detection_stats.stats[i].enter_time
+          let exit = detection_stats.stats[i].exit_time
+          enter = enter !== null ? new Date(enter * 1000).toLocaleString() : null
+          exit = exit !== null ? new Date(exit * 1000).toLocaleString() : null
+          html += `
+          <tr>
+          <td>${detection_stats.stats[i].id}</td>
+          <td>${enter}</td>
+          <td>${exit}</td>
+          </tr>
+          `;
+        }
+        html += `
+        </tbody>
+        </table>
+        `;
+        popupData.innerHTML = html;
+      }
       popupContainer.style.display = "flex";
       popupContainer.style.alignItems = "center";
       popupContainer.style.justifyContent = "center";

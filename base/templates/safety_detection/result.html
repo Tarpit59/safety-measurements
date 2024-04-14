@@ -12,13 +12,26 @@
     <div class="container-2">
       <h1>Safety Detection Result</h1>
       <p>Video Name: <b>{{ video_name }}</b></p>
-      <span hidden id="safety_percentage"
+      <span hidden id="safety"
         >{{result_percentage.get('safety')}}</span
       >
-      <span hidden id="unsafety_percentage"
+      <span hidden id="unsafety"
         >{{result_percentage.get('unsafety')}}</span
       >
+      <span hidden id="helmet"
+        >{{result_percentage.get('helmet')}}</span
+      >
+      <span hidden id="no_helmet"
+        >{{result_percentage.get('no_helmet')}}</span
+      >
+      <span hidden id="vest"
+        >{{result_percentage.get('vest')}}</span
+      >
+      <span hidden id="no_vest"
+        >{{result_percentage.get('no_vest')}}</span
+      >
       <div id="myChart"></div>
+      <div id="myChart2"></div>
     </div>
   </div>
 </div>

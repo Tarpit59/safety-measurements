@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const unsafety_percentage = document.getElementById(
-    "unsafety_percentage"
-  ).innerHTML;
-  const safety_percentage =
-    document.getElementById("safety_percentage").innerHTML;
+  const unsafety = document.getElementById("unsafety").innerHTML;
+  const safety = document.getElementById("safety").innerHTML;
+  const helmet = document.getElementById("helmet").innerHTML;
+  const vest = document.getElementById("vest").innerHTML;
+  const no_helmet = document.getElementById("no_helmet").innerHTML;
+  const no_vest = document.getElementById("no_vest").innerHTML;
 
   google.charts.load("current", { packages: ["corechart"] });
   google.charts.setOnLoadCallback(drawChart);
@@ -11,23 +12,30 @@ document.addEventListener("DOMContentLoaded", function () {
   function drawChart() {
     const data = google.visualization.arrayToDataTable([
       ["Result", "Percentage"],
-      ["Safety", parseFloat(safety_percentage)],
-      ["Unsafety", parseFloat(unsafety_percentage)],
+      ["Safety", parseFloat(safety)],
+      ["Unsafety", parseFloat(unsafety)],
+    ]);
+    const data2 = google.visualization.arrayToDataTable([
+      ["Result", "Percentage"],
+      ["Helmet", parseFloat(helmet)],
+      ["Vest", parseFloat(vest)],
+      ["No Helmet", parseFloat(no_helmet)],
+      ["No Vest", parseFloat(no_vest)],
     ]);
 
     const options = {
       backgroundColor: "transparent",
-      fontColor: "#fff",
+      fontColor: "#000",
       width: 550,
       height: 300,
       legend: {
         textStyle: {
-          color: "#fff",
+          color: "#000",
           fontSize: 18,
         },
       },
       pieSliceTextStyle: {
-        color: "#fff",
+        color: "#000",
         fontSize: 16,
       },
     };
@@ -35,6 +43,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const chart = new google.visualization.PieChart(
       document.getElementById("myChart")
     );
+    const chart2 = new google.visualization.PieChart(
+      document.getElementById("myChart2")
+    );
     chart.draw(data, options);
+    chart2.draw(data2, options);
   }
 });

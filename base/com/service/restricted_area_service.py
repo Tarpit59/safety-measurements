@@ -14,7 +14,7 @@ def count_persons_entered_restricted_area(input_video_path, coordinates):
     model = YOLO(app.config['RESTRICTED_MODEL'])
     names = model.names
     entering_persons = {}
-    
+
     output_video_path = os.path.join(
         app.config['RESTRICTED_OUTPUT_FOLDER'], os.path.basename(input_video_path))
 
@@ -88,7 +88,7 @@ def count_persons_entered_restricted_area(input_video_path, coordinates):
                         persons_entered_count += 1
                         if person_id not in person_time_dict:
                             person_time_dict[person_id] = {
-                                'enter_time': current_time, 'exit_time': None}
+                                'enter_time': int(current_time), 'exit_time': None}
                 else:
                     cv2.rectangle(frame, (int(x1), int(y1)),
                                   (int(x2), int(y2)), color_person_outside, 2)
@@ -98,7 +98,7 @@ def count_persons_entered_restricted_area(input_video_path, coordinates):
                     # If the person has entered before, update exit time only if they haven't exited before
                     if person_id in entering_persons and entering_persons[person_id]:
                         if person_id in person_time_dict and person_time_dict[person_id]['exit_time'] is None:
-                            person_time_dict[person_id]['exit_time'] = current_time
+                            person_time_dict[person_id]['exit_time'] = int(current_time)
 
         # Display count of persons entered in the top-left corner
         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -111,7 +111,11 @@ def count_persons_entered_restricted_area(input_video_path, coordinates):
                          for key, value in person_time_dict.items()]
     video_capture.release()
     out.release()
-    return input_video_path, output_video_path, {'count': persons_entered_count, 'stats': list_of_timestamp}
+    return input_video_path, output_video_path, {
+        'type': 'Restricted Area',
+        'count': persons_entered_count,
+        'stats': list_of_timestamp
+    }
 
 
 def store_uploaded_video(video):
