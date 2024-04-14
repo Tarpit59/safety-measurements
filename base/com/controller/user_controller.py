@@ -78,17 +78,25 @@ def view_detection():
             for i in range(len(data)):
                 data_dict = {}
 
+                input_file_path = data[i].input_file_path.split('\\')[-1]
+                output_file_path = data[i].output_file_path.split('\\')[-1]
+                detection_type = data[i].detection_type
+                input_file_url = f"static/upload/{detection_type}/{input_file_path}"
+                output_file_url = f"static/output/{detection_type}/{output_file_path}"
+                detection_datetime = datetime.utcfromtimestamp(
+                    data[i].detection_datetime).strftime('%Y-%m-%d %H:%M:%S')
+                # original_filename = input_file_path.split(" ").pop().join("")
+
                 data_dict['sr_no'] = i+1
                 data_dict['detection_id'] = data[i].detection_id
                 data_dict['detection_stats'] = data[i].detection_stats
-                data_dict['input_file_path'] = data[i].input_file_path.split(
-                    '\\')[-1].capitalize()
-                data_dict['output_file_path'] = data[i].output_file_path.split(
-                    '\\')[-1].capitalize()
-                data_dict['detection_type'] = data[i].detection_type.capitalize()
+                data_dict['input_file_path'] = input_file_path.capitalize()
+                data_dict['output_file_path'] = output_file_path.capitalize()
+                data_dict['input_file_url'] = input_file_url
+                data_dict['output_file_url'] = output_file_url
+                data_dict['detection_type'] = detection_type.capitalize()
                 data_dict['detection_source'] = data[i].detection_source.capitalize()
-                data_dict['detection_datetime'] = datetime.utcfromtimestamp(
-                    data[i].detection_datetime).strftime('%Y-%m-%d %H:%M:%S')
+                data_dict['detection_datetime'] = detection_datetime
                 customized_data.append(data_dict)
 
             return render_template('user/view_detection.html', user=current_user, data=customized_data)

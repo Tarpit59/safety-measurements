@@ -20,8 +20,24 @@
     {% for i in data %}
     <tr>
       <td>{{i['sr_no']}}</td>
-      <td>{{i['input_file_path']}}</td>
-      <td>{{i['output_file_path']}}</td>
+      <td>
+        <a
+          class="view-file tooltip"
+          href="{{i['input_file_url']}}"
+          target="_blank"
+          >View
+          <span class="tooltiptext">{{i['input_file_path']}}</span>
+        </a>
+      </td>
+      <td>
+        <a
+          class="view-file tooltip"
+          href="{{i['output_file_url']}}"
+          target="_blank"
+          >View
+          <span class="tooltiptext">{{i['output_file_path']}}</span>
+        </a>
+      </td>
       <td>{{i['detection_type']}}</td>
       <td>{{i['detection_source']}}</td>
       <td class="view" data="{{i['detection_stats']}}">View</td>

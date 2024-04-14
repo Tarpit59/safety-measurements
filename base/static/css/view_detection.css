@@ -71,6 +71,10 @@
     cursor: pointer;
 }
 
+.view-file {
+    color: #428bca !important;
+}
+
 .rwd-table .view {
     color: #428bca;
     cursor: pointer;
