@@ -8,6 +8,7 @@
   <tbody>
     <tr>
       <th>Sr No.</th>
+      <th>Filename</th>
       <th>Input Video</th>
       <th>Output Video</th>
       <th>Type</th>
@@ -20,6 +21,7 @@
     {% for i in data %}
     <tr>
       <td>{{i['sr_no']}}</td>
+      <td>{{i['original_filename']}}</td>
       <td>
         <a
           class="view-file tooltip"

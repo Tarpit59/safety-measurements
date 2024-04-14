@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from flask import render_template, redirect, request, session, url_for
 from flask_login import login_user, login_required, current_user, logout_user
@@ -85,7 +86,7 @@ def view_detection():
                 output_file_url = f"static/output/{detection_type}/{output_file_path}"
                 detection_datetime = datetime.utcfromtimestamp(
                     data[i].detection_datetime).strftime('%Y-%m-%d %H:%M:%S')
-                # original_filename = input_file_path.split(" ").pop().join("")
+                original_filename = re.sub(r'\s*\(\d+\)', '', input_file_path)
 
                 data_dict['sr_no'] = i+1
                 data_dict['detection_id'] = data[i].detection_id
@@ -97,6 +98,7 @@ def view_detection():
                 data_dict['detection_type'] = detection_type.capitalize()
                 data_dict['detection_source'] = data[i].detection_source.capitalize()
                 data_dict['detection_datetime'] = detection_datetime
+                data_dict['original_filename'] = original_filename.capitalize()
                 customized_data.append(data_dict)
 
             return render_template('user/view_detection.html', user=current_user, data=customized_data)
