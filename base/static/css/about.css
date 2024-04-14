@@ -1,0 +1,47 @@
+.container {
+    max-width: 1370px;
+    margin: 0 auto;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin: 8px;
+}
+
+.about-section {
+    padding: 50px;
+    text-align: center;
+    background-color: #ced3dc;
+    color: black;
+    border: 1px solid gray;
+
+    font-family: "Arial", sans-serif;
+    /* Sans-serif fallback */
+    /* font-family: 'Georgia', serif; */
+    font-size: 20px;
+}
+
+.inside-about-content h1 {
+    text-align: center;
+}
+
+.inside-about-content {
+    /* max-width: 1200px */
+    text-align: left;
+    line-height: 1.8;
+}
+
+.container {
+    padding: 0 16px;
+}
+
+li {
+    margin-bottom: 25px;
+}
+
+.container::after,
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+}

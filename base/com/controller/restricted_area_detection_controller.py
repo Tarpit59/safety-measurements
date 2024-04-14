@@ -1,12 +1,12 @@
 import os
-import datetime
 import json
+from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask import render_template, redirect, request, url_for, jsonify, session
 from flask_login import login_required, current_user
 from base.com.service.restricted_area_service import get_first_frame, store_uploaded_video, count_persons_entered_restricted_area
 from base.com.vo.detection_vo import DetectionVO
-from base.com.dao.restricted_area_detection_dao import RestrictedAreaDAO
+from base.com.dao.detection_dao import DetectionDAO
 from base import app
 
 
@@ -58,7 +58,7 @@ def define_area():
 @app.route('/process-restricted-area', methods=['GET', "POST"])
 @login_required
 def process_restricted_area():
-    restricted_area_dao_obj = RestrictedAreaDAO()
+    detection_dao_obj = DetectionDAO()
     detection_vo_obj = DetectionVO()
     try:
         if request.method != 'POST':
@@ -74,7 +74,7 @@ def process_restricted_area():
                 coord['y'])) for coord in coordinates if 'x' in coord and 'y' in coord]
 
             detection_vo_obj.detection_datetime = int(
-                datetime.datetime.now().timestamp())
+                datetime.now().timestamp())
             result = count_persons_entered_restricted_area(
                 session.get('stored_file_path'),
                 converted_coordinates
@@ -89,14 +89,14 @@ def process_restricted_area():
             detection_vo_obj.detection_type = 'restricted'
             detection_vo_obj.is_deleted = False
             detection_vo_obj.created_on = int(
-                datetime.datetime.now().timestamp())
+                datetime.now().timestamp())
             detection_vo_obj.modified_on = int(
-                datetime.datetime.now().timestamp())
+                datetime.now().timestamp())
             detection_vo_obj.detection_stats = json.dumps(
                 result_percentage)
             detection_vo_obj.detection_source = 'video'
 
-            restricted_area_dao_obj.save(detection_vo_obj)
+            detection_dao_obj.save(detection_vo_obj)
 
             # Store person_count in the session
             session['person_count'] = result_percentage.get('count')
