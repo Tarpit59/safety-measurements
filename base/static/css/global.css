@@ -57,7 +57,7 @@ a:hover {
 .navbar>.user>.logout {
   margin-left: 10px;
   padding: 8px 15px;
-  color: #080710;
+  color: rgb(79, 78, 78);
   background-color: white;
   border-radius: 10px;
   text-decoration: none !important;
@@ -72,7 +72,7 @@ a:hover {
   font-size: 18px;
   text-align: center;
   color: white;
-  background-color: #080710;
+  background-color: rgb(79, 78, 78);
 }
 
 #preloader {

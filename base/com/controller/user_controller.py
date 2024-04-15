@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import render_template, redirect, request, session, url_for
 from flask_login import login_user, login_required, current_user, logout_user
 from base import app, login_manager
@@ -84,8 +84,15 @@ def view_detection():
                 detection_type = data[i].detection_type
                 input_file_url = f"static/upload/{detection_type}/{input_file_path}"
                 output_file_url = f"static/output/{detection_type}/{output_file_path}"
-                detection_datetime = datetime.utcfromtimestamp(
-                    data[i].detection_datetime).strftime('%Y-%m-%d %H:%M:%S')
+
+                detection_datetime_utc = datetime.utcfromtimestamp(
+                    data[i].detection_datetime)
+                detection_datetime_local = detection_datetime_utc.replace(
+                    tzinfo=timezone.utc).astimezone(tz=None)
+                detection_datetime = detection_datetime_local.strftime(
+                    '%m/%d/%Y, %I:%M:%S %p')
+                # detection_datetime = datetime.utcfromtimestamp(
+                #     data[i].detection_datetime).strftime('%Y-%m-%d %H:%M:%S')
                 original_filename = re.sub(r'\s*\(\d+\)', '', input_file_path)
 
                 data_dict['sr_no'] = i+1
