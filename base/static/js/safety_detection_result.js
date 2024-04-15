@@ -26,17 +26,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const options = {
       backgroundColor: "transparent",
       fontColor: "#000",
-      width: 550,
-      height: 300,
+      width: 280,
+      height: 330,
+      chartArea: { width: "100%", height: "80%" },
       legend: {
         textStyle: {
           color: "#000",
-          fontSize: 18,
+          fontSize: 14,
         },
+        position: "bottom",
       },
       pieSliceTextStyle: {
-        color: "#000",
-        fontSize: 16,
+        color: "#fff",
+        fontSize: 14,
       },
     };
 
