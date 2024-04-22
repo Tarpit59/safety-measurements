@@ -36,7 +36,6 @@ def safety_detection():
                     input_video_path)
                 output_video_name, result_percentage = result
                 
-                print(result_percentage)
                 detection_vo_obj.created_by = current_user.login_id
                 detection_vo_obj.modified_by = current_user.login_id
                 detection_vo_obj.input_file_path = input_video_path

@@ -107,10 +107,14 @@ def count_persons_entered_restricted_area(input_video_path, coordinates):
 
         # Write the frame to the output video
         out.write(frame)
+        cv2.imshow('Safety Detection', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
     list_of_timestamp = [{**{'id': key}, **value}
                          for key, value in person_time_dict.items()]
     video_capture.release()
     out.release()
+    cv2.destroyAllWindows()
     return input_video_path, output_video_path, {
         'type': 'Restricted Area',
         'count': persons_entered_count,

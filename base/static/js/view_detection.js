@@ -79,8 +79,8 @@ function viewPopup() {
         for (let i = 0; i < detection_stats.stats.length; i++) {
           let enter = detection_stats.stats[i].enter_time
           let exit = detection_stats.stats[i].exit_time
-          enter = enter !== null ? new Date(enter * 1000).toLocaleString() : null
-          exit = exit !== null ? new Date(exit * 1000).toLocaleString() : null
+          enter = enter !== null ? new Date(enter * 1000).toLocaleString() : 'Not Found'
+          exit = exit !== null ? new Date(exit * 1000).toLocaleString() : 'Not Found'
           html += `
           <tr>
           <td>${detection_stats.stats[i].id}</td>

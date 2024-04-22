@@ -26,6 +26,25 @@ def draw_text_and_box_on_image(image, text, position, box_coordinates, font, col
     return image
 
 
+def calculate_display_size(original_width, original_height, max_width=800, max_height=600):
+    aspect_ratio = original_width / original_height
+
+    if original_width > max_width or original_height > max_height:
+        if (max_width / max_height) > aspect_ratio:
+            # Limited by height
+            new_height = max_height
+            new_width = int(new_height * aspect_ratio)
+        else:
+            # Limited by width
+            new_width = max_width
+            new_height = int(new_width / aspect_ratio)
+    else:
+        # No resizing needed if the image is smaller than the max dimensions
+        new_width, new_height = original_width, original_height
+
+    return new_width, new_height
+
+
 def apply_safety_detection(input_video_path):
     model = initialize_model()
     video_base_name = os.path.basename(input_video_path)
@@ -35,7 +54,9 @@ def apply_safety_detection(input_video_path):
 
         # Get the frames per second (fps) of the input video
         fps = cap.get(cv2.CAP_PROP_FPS)
-
+        original_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        original_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        display_width, display_height = calculate_display_size(original_width, original_height)
         # Create VideoWriter object with the same fps as the input video
         fourcc = cv2.VideoWriter_fourcc(*'avc1')
         # fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
@@ -123,10 +144,17 @@ def apply_safety_detection(input_video_path):
                         safety_count += 1
                     else:
                         unsafety_count += 1
-
-                # Write the frame to the output video (outside the detection loop)
                 out.write(
-                    modified_frame) if detection_occurred else out.write(frame)
+                    modified_frame) if detection_occurred else out.write(frame)  
+                if detection_occurred:
+                    modified_frame = modified_frame
+                else:
+                    modified_frame=frame
+                    
+                display_frame = cv2.resize(modified_frame, (display_width, display_height), interpolation=cv2.INTER_AREA)
+                cv2.imshow('Safety Detection', display_frame)
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
 
             except Exception as e:
                 # Log the error instead of printing
@@ -138,6 +166,7 @@ def apply_safety_detection(input_video_path):
         # Release the video capture
         cap.release()
         out.release()
+        cv2.destroyAllWindows()
 
     # Calculate percentages based on the total number of detections
     total_detections = safety_count + unsafety_count
